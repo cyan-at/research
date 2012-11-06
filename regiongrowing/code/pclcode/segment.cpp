@@ -66,18 +66,12 @@ int main (int argc, char** argv)
 				exit (1);
 		}
 	}
-
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
   if ( pcl::io::loadPCDFile <pcl::PointXYZ> (infile, *cloud) == -1)
   {
     std::cout << "Cloud reading failed." << std::endl;
     return (-1);
   }
-  
-  cout << k + 1 << endl;
-  cout << m + 1 << endl;
-  cout << r + 1 << endl;
-  cout << a + 1 << endl;
  
   pcl::search::Search<pcl::PointXYZ>::Ptr tree = boost::shared_ptr<pcl::search::Search<pcl::PointXYZ> > (new pcl::search::KdTree<pcl::PointXYZ>);
   pcl::PointCloud <pcl::Normal>::Ptr normals (new pcl::PointCloud <pcl::Normal>);
@@ -100,7 +94,6 @@ int main (int argc, char** argv)
   reg.setSearchMethod (tree);
   reg.setNumberOfNeighbours (r);
   reg.setInputCloud (cloud);
-  //reg.setIndices (indices);
   reg.setInputNormals (normals);
   reg.setSmoothnessThreshold (7.0 / 180.0 * M_PI);
   reg.setCurvatureThreshold (1.0);
@@ -108,9 +101,10 @@ int main (int argc, char** argv)
   std::vector <pcl::PointIndices> clusters;
   reg.extract (clusters);
 
-  std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
+  //std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
   pcl::PCDWriter writer;
   unsigned int j = 0;
+  int total = 0;
   for (std::vector<pcl::PointIndices>::const_iterator it = clusters.begin (); it != clusters.end (); ++it)
   {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZ>);
@@ -119,14 +113,18 @@ int main (int argc, char** argv)
     cloud_cluster->width = cloud_cluster->points.size ();
     cloud_cluster->height = 1;
     cloud_cluster->is_dense = true;
+    
+    total += cloud_cluster->points.size();
 
-    std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+    //std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
     std::stringstream ss;
     ss << outDir << j << ".pcd";
     cout << ss.str() << endl;
     writer.write<pcl::PointXYZ> (ss.str (), *cloud_cluster, false); //*
     j++;
   }
+  cout << total << endl;
+
 
   return (0);
 }

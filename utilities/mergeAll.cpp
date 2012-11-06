@@ -24,8 +24,7 @@ vector<string> split(const string &s, char delim){
     return split(s, delim, elems);
 }
 
-int main (int argc, char** argv)
-{
+int main (int argc, char** argv){
     ///The file to read from.
     vector<string>* infiles = new vector<string>;
     string outfile;
