@@ -72,7 +72,7 @@ int main (int argc, char** argv)
     std::cout << "Cloud reading failed." << std::endl;
     return (-1);
   }
- 
+  cout << cloud->points.size() << endl;
   pcl::search::Search<pcl::PointXYZ>::Ptr tree = boost::shared_ptr<pcl::search::Search<pcl::PointXYZ> > (new pcl::search::KdTree<pcl::PointXYZ>);
   pcl::PointCloud <pcl::Normal>::Ptr normals (new pcl::PointCloud <pcl::Normal>);
   pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_estimator;
