@@ -119,7 +119,7 @@ int main (int argc, char** argv)
     //std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
     std::stringstream ss;
     ss << outDir << j << ".pcd";
-    cout << ss.str() << endl;
+    //cout << ss.str() << endl;
     writer.write<pcl::PointXYZ> (ss.str (), *cloud_cluster, false); //*
     j++;
   }
