@@ -4,8 +4,7 @@ ks = [10, 20, 30, 40, 50];
 rs = [10, 20, 30, 40, 50];
 ms = [50, 100, 150, 200, 250];
 as = [15000];
-infiles = {...
-	'/home/charlie/Desktop/research/regiongrowing/code/pclcode/data/source/pcd0000000024.pcd'
+infiles = {'/home/charlie/Desktop/research/regiongrowing/code/pclcode/data/source/pcd0000000024.pcd'
 };
 outdir = '/home/charlie/Desktop/research/regiongrowing/code/pclcode/data/';
 
