@@ -2,6 +2,7 @@
 *.slo
 *.lo
 *.o
+*.out
 
 # Compiled Dynamic libraries
 *.so
@@ -12,4 +13,10 @@
 *.a
 
 # Data
-regionGrowing/data/
+data/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+*.cmake
+
