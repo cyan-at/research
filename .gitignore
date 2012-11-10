@@ -15,6 +15,9 @@
 # Data
 data/
 
+# Test
+test/
+
 # CMake
 CMakeFiles/
 CMakeCache.txt
