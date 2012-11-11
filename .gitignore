@@ -26,3 +26,5 @@ CMakeFiles/
 CMakeCache.txt
 *.cmake
 
+# Temporary Matlab files
+*.m~
