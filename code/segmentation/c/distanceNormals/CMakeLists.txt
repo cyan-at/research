@@ -9,4 +9,5 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 add_executable (don_segmentation distanceNormals.cpp)
+set(CMAKE_CXX_FLAGS "-w")
 target_link_libraries (don_segmentation ${PCL_LIBRARIES})

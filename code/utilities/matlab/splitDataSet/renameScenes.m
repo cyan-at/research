@@ -39,22 +39,8 @@ for i = 1:size(labels,2);
     disp(pcdDirectory);
     if ~exist(pcdDirectory,'dir') mkdir(pcdDirectory); end;
     pcdFile = strcat(pcdDirectory,'/source.pcd');
-    expanded = sprintf('%06d.png',img_idx);
-    expanded2 = sprintf('%06d.txt',img_idx);
-    rawImgLoc = strcat(image_dir,'/',expanded);
-    rawImgTarget = strcat(pcdDirectory,'/',expanded);
-    objectFileTarget = strcat(pcdDirectory,'/', expanded2);
-    topcdcmd = sprintf('/home/charlie/Desktop/extractExperiment/pclcode/topcd -i %s -o %s',pcFile,pcdFile);
-    saverawcmd = sprintf('cp %s %s', rawImgLoc, rawImgTarget);
-    saveobjcmd = sprintf('cp %s %s', objectFile, objectFileTarget);
-    trackletsFile = sprintf('/home/charlie/Desktop/extractExperiment/data/training/raw_data/%s/tracklets/tracklet_labels.xml', map{i}{2});
-    trackletsTarget = strcat(pcdDirectory,'/tracklets.xml');
-    savetrackletscmd = sprintf('cp %s %s', trackletsFile, trackletsTarget);
-    % execute all of the cmds
-    system(topcdcmd);
-    system(saverawcmd);
-    system(saveobjcmd);
-    system(savetrackletscmd);
-    disp(map{i}{3});
+    targetPCD = strcat(pcdDirectory,'/',sprintf('%06d.pcd',img_idx));
+    mvCMD = sprintf('mv %s %s',pcdFile,targetPCD);
+    system(mvCMD);
 end
 disp('Done');
