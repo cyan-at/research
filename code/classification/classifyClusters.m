@@ -18,7 +18,7 @@ nameFolds = {d.name}';
 nameFolds(ismember(nameFolds,{'.','..'})) = [];
 for i = 1:length(nameFolds)
     pcdFile = fullfile(clusterLocation,cell2mat(nameFolds(i)));
-    disp(pcdFile);
+    % disp(pcdFile);
     pc = pcd2mat(pcdFile);
     [~,y,z] = fileparts(pcdFile);
     matFileName = fullfile(matDir,strcat(y,'.mat'));
@@ -34,6 +34,7 @@ for i = 1:length(nameFolds)
     feat.y = [1:size(feaArr,2)];
     save(matFileName,'feat');
     % then do pooling
+    
     
     % then apply them to trained models
     
