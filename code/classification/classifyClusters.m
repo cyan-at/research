@@ -13,6 +13,10 @@ radius = 1;
 imgW = 16;
 minN = 10;
 
+% load model, encoder
+load model.mat
+load svm.mat
+
 d = dir(clusterLocation);
 nameFolds = {d.name}';
 nameFolds(ismember(nameFolds,{'.','..'})) = [];
