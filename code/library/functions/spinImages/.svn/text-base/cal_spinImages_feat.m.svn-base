@@ -1,0 +1,25 @@
+function cal_spinImages_feat(savepath,obj,radius,imgW,minN)
+[pathstr, name, ~] = fileparts(savepath);
+fprintf('Processing spinImages: %s.mat (%d objs)\n',name, length(obj));
+for i=1:length(obj)
+    feapath = sprintf('%s/%s_%.2d.mat',pathstr,name,i);
+    if isfield(obj(i),'difficult') & obj(i).difficult
+        continue;
+    end
+    try
+        load(feapath)
+    catch
+        fprintf('obj %d\n',i);
+        feaArr = compSpinImages(obj(i).pointcloud', radius, imgW, minN); 
+        feaArr = reshape(feaArr,imgW*imgW,size(obj(i).pointcloud,2));
+        feaSet.feaArr = single(feaArr);
+        
+        feaSet.width = size(feaArr,2);
+        feaSet.height = size(feaArr,2);
+        feaSet.x = [1:size(feaArr,2)];
+        feaSet.y = [1:size(feaArr,2)];
+        
+        save(feapath,'feaSet');
+    end
+end
+end
