@@ -30,3 +30,6 @@ CMakeCache.txt
 
 # Temporary Matlab files
 *.m~
+
+# DS_Store
+.DS_Store
