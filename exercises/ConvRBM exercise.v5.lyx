@@ -1,0 +1,458 @@
+#LyX 1.6.10 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Tutorial on Convolutional RBM
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+For introduction, read Lee et al., CACM 2011 paper.
+\end_layout
+
+\begin_layout Section
+Derivations
+\end_layout
+
+\begin_layout Subsection
+Energy Function and Conditional Probability
+\end_layout
+
+\begin_layout Standard
+We define the energy function of convolutional RBM as 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+E(\mathbf{v},\mathbf{h})=-\sum_{k=1}^{K}\sum_{i,j=1}^{N_{H}}\sum_{r,s=1}^{N_{W}}h_{ij}^{k}W_{rs}^{k}v_{i+r-1,j+s-1}-\sum_{k=1}^{K}b_{k}\sum_{i,j=1}^{N_{H}}h_{ij}^{k}-c\sum_{i,j=1}^{N_{V}}v_{ij}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Exercise 1: 
+\end_layout
+
+\begin_layout Standard
+Derive Equation 8, i.e., using the operators defined in the Lee et al., paper,
+ we have:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+E(\mathbf{v},\mathbf{h})=-\sum_{k=1}^{K}\mathbf{h}^{k}\cdot\left(\mathbf{v}*_{val}\tilde{\mathbf{W}}^{k}\right)-\sum_{k=1}^{K}b_{k}\sum_{i,j=1}^{N_{H}}h_{ij}^{k}-c\sum_{i,j=1}^{N_{V}}v_{ij}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(Hint: it is sufficient to derive this for 1d case.)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Exercise 2:
+\end_layout
+
+\begin_layout Standard
+Derive the conditional distributions in Eq 9:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+P(h_{ij}^{k}=1|\mathbf{v})=sigmoid\left(\left(\mathbf{v}*_{val}\tilde{\mathbf{W}}^{k}\right)_{ij}+b_{k}\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Exercise 3:
+\end_layout
+
+\begin_layout Standard
+Derive the conditional distributions in Eq 10:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+P(v_{ij}=1|\mathbf{h})=sigmoid\left(\sum_{k}\left(\mathbf{h}*_{full}\mathbf{W}^{k}\right)_{ij}+c\right)\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Energy Function and Conditional Probability with Probabilistic Max-pooling
+\end_layout
+
+\begin_layout Standard
+Now, we define the probability as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray*}
+E(\mathbf{v},\mathbf{h}) & = & -\sum_{k=1}^{K}h_{ij}^{k}\left(\mathbf{v}*_{val}\tilde{\mathbf{W}}^{k}\right)_{ij}-\sum_{k=1}^{K}b_{k}\sum_{i,j=1}^{N_{H}}h_{ij}^{k}-c\sum_{i,j=1}^{N_{V}}v_{ij}\\
+s.t. &  & \sum_{(i,j)\in B_{\alpha}}h_{ij}^{k}\le1,\forall k,\alpha\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Exercise 4:
+\end_layout
+
+\begin_layout Standard
+Derive Eq 14.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+P(h_{ij}^{k}=1|\mathbf{v})=\frac{\exp(I(h_{ij}^{k}))}{1+\sum_{ij\in B_{\alpha}}\exp(I(h_{i'j'}^{k}))}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Exercise 5:
+\end_layout
+
+\begin_layout Standard
+Derive Eq 15 
+\end_layout
+
+\begin_layout Standard
+Note that this is the direct consequence of Eq 14 and the fact that 
+\begin_inset Formula $p_{\alpha}^{k}=\sum_{ij\in B_{\alpha}}h_{ij}^{k}$
+\end_inset
+
+.
+ Beware that the pooling nodes 
+\begin_inset Formula $p^{k}$
+\end_inset
+
+ and detection nodes 
+\begin_inset Formula $h_{ij}^{k}$
+\end_inset
+
+ in the block 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ must be sampled together (i.e., not independently) due to the relationship
+ 
+\begin_inset Formula $p_{\alpha}^{k}=\sum_{ij\in B_{\alpha}}h_{ij}^{k}$
+\end_inset
+
+ and 
+\begin_inset Formula $\sum_{ij\in B_{\alpha}}h_{ij}^{k}\in\{0,1\}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Learning
+\end_layout
+
+\begin_layout Paragraph
+Exercise 6:
+\end_layout
+
+\begin_layout Standard
+In order to derive contrastive divergence, prove that 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray*}
+-\frac{\partial E}{\partial W_{rs}^{k}} & = & \left(\mathbf{v}*_{val}\tilde{\mathbf{h}}^{k}\right)_{rs}\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Exercise 7:
+\end_layout
+
+\begin_layout Standard
+Derive Eq 17.
+ using the definition of contrastive divergence, i.e., 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\frac{\partial\log P(\mathbf{v})}{\partial W_{rs}^{k}}=\mathbb{E}_{\mathbf{h}\sim P(\mathbf{h}|\mathbf{v})}\left[\left(\mathbf{v}*_{val}\tilde{\mathbf{h}}^{k}\right)_{rs}\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}'\sim P(\mathbf{h},\mathbf{v})}\left[\left(\mathbf{v}'*_{val}\tilde{\mathbf{h}}'^{k}\right)_{rs}\right]\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note: In other words, this can be written in a shorthand notation (matrix
+ form):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \[
+\nabla_{W^{k}}\log P(\mathbf{v})=\mathbb{E}_{\mathbf{h}\sim P(\mathbf{h}|\mathbf{v})}\left[\mathbf{v}*_{val}\tilde{\mathbf{h}}^{k}\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}'\sim P(\mathbf{h},\mathbf{v})}\left[\mathbf{v}'*_{val}\tilde{\mathbf{h}}'^{k}\right]\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note: When we apply gradient descent, the learning rule can be written as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula \begin{eqnarray*}
+\Delta W_{rs}^{k} & \propto & \left\langle \left(\mathbf{v}*_{val}\tilde{\mathbf{h}}^{k}\right)_{rs}\right\rangle _{\mathbf{h}\sim P(\mathbf{h}|\mathbf{v})}-\left\langle \left(\mathbf{v}'*_{val}\tilde{\mathbf{h}}'^{k}\right)_{rs}\right\rangle _{\mathbf{v}',\mathbf{h}'\sim P(\mathbf{h},\mathbf{v})}\\
+ & \propto & \mathbb{E}_{\mathbf{h}\sim P(\mathbf{h}|\mathbf{v})}\left[\left(\mathbf{v}*_{val}\tilde{\mathbf{h}}^{k}\right)_{rs}\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}'\sim P(\mathbf{h},\mathbf{v})}\left[\left(\mathbf{v}'*_{val}\tilde{\mathbf{h}}'^{k}\right)_{rs}\right]\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Remarks:
+\end_layout
+
+\begin_layout Standard
+Given that you know the basic derivation of RBM, you have just finished
+ all necessary derivations of the convolutional RBM.
+ Congratulations!
+\end_layout
+
+\end_body
+\end_document

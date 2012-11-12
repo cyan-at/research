@@ -1,0 +1,1764 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Tutorial on Restricted Boltzmann Machines
+\end_layout
+
+\begin_layout Standard
+(Last updated: 9/14/2012, 2pm)
+\end_layout
+
+\begin_layout Section
+Formulation of the binary RBM
+\end_layout
+
+\begin_layout Subsection
+Energy function
+\end_layout
+
+\begin_layout Standard
+The joint distribution and the energy function of the RBM can be described
+ as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(\mathbf{v},\mathbf{h}) & = & \frac{1}{Z}\exp(-E(\mathbf{v},\mathbf{h}))\\
+E(\mathbf{v},\mathbf{h}) & = & -\sum_{ij}v_{i}W_{ij}h_{j}-\sum_{j}b_{j}h_{j}-\sum_{i}c_{i}v_{i}\\
+ & = & -\mathbf{v}^{T}\mathbf{W}\mathbf{h}-\mathbf{b}^{T}\mathbf{h}-\mathbf{c}^{T}\mathbf{v}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, 
+\begin_inset Formula $\mathbf{v}\in\{0,1\}^{D}$
+\end_inset
+
+ are binary visible units, 
+\begin_inset Formula $\mathbf{h}\in\{0,1\}^{K}$
+\end_inset
+
+ are binary hidden units, 
+\begin_inset Formula $W$
+\end_inset
+
+ are weights between hidden units and visible units, 
+\begin_inset Formula $c$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ are biases.
+ The second equation is written in vector-matrix form.
+\end_layout
+
+\begin_layout Subsection
+Conditional distribution
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise
+\series default
+ 
+\series bold
+1
+\series default
+.
+ Explain why the 
+\begin_inset Formula $h_{j}$
+\end_inset
+
+ are conditionally independent given 
+\series bold
+
+\begin_inset Formula $\mathbf{v}$
+\end_inset
+
+
+\series default
+.
+ Similarly, explain why 
+\begin_inset Formula $v_{i}$
+\end_inset
+
+ are conditionally independent given 
+\begin_inset Formula $\mathbf{h}$
+\end_inset
+
+.
+ (Hint: recall conditional independence properties of the Markov (or undirected)
+ network.)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution: 
+\series default
+The 
+\begin_inset Formula $h_{j}$
+\end_inset
+
+ are conditionally independent given 
+\series bold
+v
+\series default
+ because in the graphical structure the hidden units are not connected to
+ each other.
+ According to the pairwise Markov property for Markov Random Fields, two
+ non-adjacent variables such as a hidden unit and another hidden unit are
+ conditionally independent given all other variables (visible units).
+ The same property applies for visible units given 
+\series bold
+h
+\series default
+.
+ Each visible unit is only connected to all other hidden units and no visible
+ units, and therefore 
+\begin_inset Formula $v_{i}$
+\end_inset
+
+ are conditionally independent given 
+\series bold
+h
+\series default
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Given the conditional independence above, we have:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(\mathbf{h}|\mathbf{v}) & = & \prod_{j}P(h_{j}=1|\mathbf{v})\\
+P(\mathbf{v}|\mathbf{h}) & = & \prod_{i}P(v_{i}=1|\mathbf{h})
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using this, derive conditional distribution 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(h_{j}=1|\mathbf{v}) & =\\
+P(v_{i}=1|\mathbf{h}) & =
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution: 
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $P(h_{j}=1|\mathbf{v})=sigmoid(W_{j}\mathbf{v}+b_{j})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $P(v_{i}=1|\mathbf{h})=sigmoid(W_{i}'\mathbf{h}+c_{i})$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Contrastive divergence
+\end_layout
+
+\begin_layout Standard
+The RBM can be viewed as a MRF with hidden variables.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise 2.
+ 
+\series default
+Given a general log-linear form of MRF as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P_{\theta}(\mathbf{x}) & = & \frac{1}{Z}\exp(\theta^{T}\phi(\mathbf{x}))\\
+ & = & \frac{1}{Z}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}))
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula 
+\[
+Z=\sum_{\mathbf{x}'}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}'))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Complete the derivation of the gradient of log-likelihood w.r.t.
+ the parameter 
+\begin_inset Formula $\theta$
+\end_inset
+
+, i.e.: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial\theta_{i}}\log P_{\theta}(\mathbf{x}) & = & \frac{\partial}{\partial\theta_{i}}\log\frac{1}{Z}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}))\\
+ & = & ....\\
+ & = & \phi_{i}(\mathbf{x})-\mathbb{E}_{\mathbf{x}'\sim P_{\theta}}\left[\phi_{i}(\mathbf{x}')\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\mathbb{E}_{\mathbf{x}'\sim P_{\theta}}\left[\phi_{i}(\mathbf{x}')\right]=\sum_{\mathbf{x}'}\phi_{i}(\mathbf{x}')P_{\theta}(\mathbf{x}')$
+\end_inset
+
+ (or 
+\begin_inset Formula $\int_{\mathbf{x}'}\phi_{i}(\mathbf{x}')P_{\theta}(\mathbf{x}')d\mathbf{x}'$
+\end_inset
+
+ for the case of continuous variable 
+\series bold
+
+\begin_inset Formula $\mathbf{x}$
+\end_inset
+
+
+\series default
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $\frac{\partial}{\partial\theta_{i}}\log P_{\theta}(\mathbf{x})=\frac{\partial}{\partial\theta_{i}}\log\frac{1}{Z}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\frac{\partial}{\partial\theta_{i}}log(exp(\Sigma_{i}\theta_{i}\phi_{i}(\mathbf{x})))-\frac{\partial}{\partial\theta_{i}}log(Z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\frac{\partial}{\partial\theta_{i}}(\theta_{1}\phi_{1}(\mathbf{x})+\theta_{2}\phi_{2}(\mathbf{x})+...)-\frac{\partial}{\partial\theta_{i}}log(Z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\frac{\partial}{\partial\theta_{i}}\theta_{i}\phi_{i}(\mathbf{x})-\frac{\partial}{\partial\theta_{i}}log(Z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\phi_{i}(\mathbf{x})-\frac{\partial}{\partial\theta_{i}}log(\sum_{\mathbf{x}'}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}')))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Use chain rule on the second expression:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\phi_{i}(\mathbf{x})-\frac{1}{\Sigma_{x'}exp(\Sigma_{i}\theta_{i}\phi_{i}(x'))}\frac{\partial}{\partial\theta_{i}}(\Sigma_{x'}exp(\Sigma_{i}\theta_{i}\phi_{i}(x')))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Move the derivative to the inside of the summation, replace expression with
+ Z
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\phi_{i}(x)-\frac{1}{Z}\Sigma_{x'}\frac{\partial}{\partial\theta_{i}}exp(\Sigma_{i}\theta_{i}\phi_{i}(x'))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Chain rule on exp function
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\phi_{i}(x)-\frac{1}{Z}\Sigma_{x'}exp(\Sigma_{i}\theta_{i}\phi_{i}(x'))\frac{\partial}{\partial\theta_{i}}\Sigma_{i}\theta_{i}\phi_{i}(x')$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Move Z term inside, take derivative with respect to 
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+, replace with definition of 
+\begin_inset Formula $P_{\theta}(x)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\phi_{i}(x)-\Sigma_{x'}[\frac{1}{Z}exp(\Sigma_{i}\theta_{i}\phi_{i}(x'))]\phi_{i}(x')$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\phi_{i}(x)-\Sigma_{x'}P_{\theta}(x')\phi_{i}(x')$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\phi_{i}(\mathbf{x})-\mathbb{E}_{\mathbf{x}'\sim P_{\theta}}\left[\phi_{i}(\mathbf{x}')\right]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise 3.
+ 
+\series default
+Now, let's consider a general log-linear form of MRF with hidden variables
+ as follows: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P_{\theta}(\mathbf{x},\mathbf{h}) & = & \frac{1}{Z}\exp(\theta^{T}\phi(\mathbf{x},\mathbf{h}))\\
+ & = & \frac{1}{Z}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h}))
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula 
+\[
+Z=\sum_{\mathbf{x}',\mathbf{h}'}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}'))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the 
+\begin_inset Quotes eld
+\end_inset
+
+likelihood
+\begin_inset Quotes erd
+\end_inset
+
+ means marginalizing over the hidden variable 
+\series bold
+
+\begin_inset Formula $\mathbf{h}$
+\end_inset
+
+
+\series default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+P_{\theta}(\mathbf{x})=\frac{1}{Z}\sum_{\mathbf{h}}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h}))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Complete the derivation of the gradient of log-likelihood w.r.t.
+ the parameter 
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial\theta_{i}}\log P_{\theta}(\mathbf{x}) & = & \frac{\partial}{\partial\theta_{i}}\log\frac{1}{Z}\sum_{\mathbf{h}}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h}))\\
+ & = & ....\\
+ & = & \mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{x})}\left[\phi_{i}(\mathbf{x},\mathbf{h})\right]-\mathbb{E}_{\mathbf{x}',\mathbf{h}\sim P_{\theta}(\mathbf{x},\mathbf{h})}\left[\phi_{i}(\mathbf{x}',\mathbf{h})\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note: In terms of MRF with an energy function (see above), this is equivalent
+ to the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial\theta}\log P(\mathbf{v})=\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[-\frac{\partial}{\partial\theta}E(\mathbf{h},\mathbf{v})\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[-\frac{\partial}{\partial\theta}E(\mathbf{h}',\mathbf{v})\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{\partial}{\partial\theta_{i}}\log P_{\theta}(\mathbf{x})=\frac{\partial}{\partial\theta_{i}}\log\frac{1}{Z}\sum_{\mathbf{h}}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h}))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\frac{\partial}{\partial\theta_{i}}log\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))-\frac{\partial}{\partial\theta_{i}}log(Z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Apply chain rule to first term
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\frac{1}{\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))}\frac{\partial}{\partial\theta_{i}}\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))-\frac{\partial}{\partial\theta_{i}}log(Z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Move the derivative term and dummy term inside the summation
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $=\Sigma_{h}\frac{1}{\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))}\frac{\partial}{\partial\theta_{i}}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))-\frac{\partial}{\partial\theta_{i}}log(Z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Derive the exp function, expand the Z term
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\Sigma_{h}\frac{1}{\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))\frac{\partial}{\partial\theta_{i}}\Sigma_{i}\theta_{i}\phi_{i}(x,h)-\frac{\partial}{\partial\theta_{i}}log(\sum_{\mathbf{x}',\mathbf{h}'}exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}')))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\Sigma_{h}\frac{exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))}{\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))}\phi_{i}(x,h)-\frac{\partial}{\partial\theta_{i}}log(\sum_{\mathbf{x}',\mathbf{h}'}exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}')))$
+\end_inset
+
+
+\begin_inset Formula $ $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+We know from the given equations that:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $P_{\theta}(\mathbf{x},\mathbf{h})=\frac{1}{Z}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h}))$
+\end_inset
+
+ and 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $P_{\theta}(\mathbf{x})=\frac{1}{Z}\sum_{\mathbf{h}}\exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h}))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Then the conditional probability of 
+\begin_inset Formula $P_{\theta}(h|x)=\frac{P_{\theta}(x,h)}{P_{\theta}(x)}=\frac{exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h)}{\Sigma_{h}exp(\Sigma_{i}\theta_{i}\phi_{i}(x,h))}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+So we can substitute the first term of the above equation and continue the
+ derivation
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\Sigma_{h}P_{\theta}(h|x)\phi_{i}(x,h)-\frac{1}{\sum_{\mathbf{x}',\mathbf{h}'}exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}'))}\sum_{\mathbf{x}',\mathbf{h}'}\frac{\partial}{\partial\theta_{i}}exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}'))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\Sigma_{h}P_{\theta}(h|x)\phi_{i}(x,h)-\sum_{\mathbf{x}',\mathbf{h}'}\frac{exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}'))}{\sum_{\mathbf{x}',\mathbf{h}'}exp(\sum_{i}\theta_{i}\phi_{i}(\mathbf{x}',\mathbf{h}'))}\phi_{i}(\mathbf{x}',\mathbf{h}')$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+We can see the ratio in the second term is equivalent to 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $P_{\theta}(\mathbf{x},\mathbf{h})$
+\end_inset
+
+, we can substitute into the equation
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\Sigma_{\mathbf{h}}P_{\theta}(\mathbf{h}|\mathbf{x})\phi_{i}(\mathbf{x},\mathbf{h})-\sum_{\mathbf{x}',\mathbf{h}'}P_{\theta}(\mathbf{x}',\mathbf{h}')\phi_{i}(\mathbf{x}',\mathbf{h}')$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $=\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{x})}\left[\phi_{i}(\mathbf{x},\mathbf{h})\right]-\mathbb{E}_{\mathbf{x}',\mathbf{h}\sim P_{\theta}(\mathbf{x},\mathbf{h})}\left[\phi_{i}(\mathbf{x}',\mathbf{h})\right]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise 4.
+ 
+\series default
+Now we consider the RBM in the context of general graphical models (MRFs
+ with hidden variables).
+ Let's go back to the RBM energy function:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(\mathbf{v},\mathbf{h}) & = & \frac{1}{Z}\exp(-E(\mathbf{v},\mathbf{h}))\\
+E(\mathbf{v},\mathbf{h}) & = & -\sum_{ij}v_{i}W_{ij}h_{j}-\sum_{j}b_{j}h_{j}-\sum_{i}c_{i}v_{i}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using the result of Exercise 3 (or from scratch), derive the gradient of
+ the log-likelihood with respect to 
+\begin_inset Formula $\theta=\{W,b,c\}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial\theta}\log P(\mathbf{v})=\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[-\frac{\partial}{\partial\theta}E(\mathbf{h},\mathbf{v})\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[-\frac{\partial}{\partial\theta}E(\mathbf{h}',\mathbf{v})\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial W_{ij}}\log P(\mathbf{v}) & = & \mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[v_{i}h_{j}\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[v'_{i}h_{j}\right]\\
+\frac{\partial}{\partial b_{j}}\log P(\mathbf{v}) & = & \mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[h_{j}\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[h_{j}\right]\\
+\frac{\partial}{\partial c_{i}}\log P(\mathbf{v}) & = & \mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[v_{i}\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[v_{i}\right]
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\begin_layout Plain Layout
+With our solution for Exercise 3, and plugging in 
+\series bold
+v
+\series default
+ for 
+\series bold
+x
+\series default
+, we come to this derivation:
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $\frac{\partial}{\partial\theta}\log P(\mathbf{v})=\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[\phi_{i}(\mathbf{v},\mathbf{h})\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[\phi_{i}(\mathbf{v}',\mathbf{h})\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Since 
+\begin_inset Formula $\sum_{i}\theta_{i}\phi_{i}(\mathbf{x},\mathbf{h})$
+\end_inset
+
+ corresponds to 
+\begin_inset Formula $-E(\mathbf{v},\mathbf{h})$
+\end_inset
+
+, and we want to express log-likelihood in terms of 
+\begin_inset Formula $\phi_{i}$
+\end_inset
+
+, we take the derivative of the RBM energy function w.r.t.
+ the parameters 
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $-\frac{\partial}{\partial\theta}E(\mathbf{h},\mathbf{v})=\phi_{i}(\mathbf{v},\mathbf{h})$
+\end_inset
+
+, substitute into the equation:
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $\frac{\partial}{\partial\theta}\log P(\mathbf{v})=\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[-\frac{\partial}{\partial\theta}E(\mathbf{h},\mathbf{v})\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[-\frac{\partial}{\partial\theta}E(\mathbf{h}',\mathbf{v})\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Substituting 
+\begin_inset Formula $W_{ij}$
+\end_inset
+
+ for 
+\begin_inset Formula $\theta$
+\end_inset
+
+, we get the expression for 
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $\frac{\partial}{\partial W_{ij}}\log P(\mathbf{v})=\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[-\frac{\partial}{\partial W_{ij}}E(\mathbf{h},\mathbf{v})\right]-\mathbb{E}_{\mathbf{v}',\mathbf{h}\sim P_{\theta}(\mathbf{v},\mathbf{h})}\left[-\frac{\partial}{\partial W_{ij}}E(\mathbf{h}',\mathbf{v})\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $-\frac{\partial}{\partial W_{ij}}E(\mathbf{h},\mathbf{v})=\frac{\partial}{\partial W_{ij}}\Sigma_{ij}v_{i}W_{ij}h_{j}$
+\end_inset
+
+
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $=v_{i}h_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Substituting 
+\begin_inset Formula $b_{j}$
+\end_inset
+
+ for 
+\begin_inset Formula $\theta$
+\end_inset
+
+, we get the expression for 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $-\frac{\partial}{\partial b_{j}}E(\mathbf{h},\mathbf{v})=\frac{\partial}{\partial b_{j}}\Sigma_{j}b_{j}h_{j}=h_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Substituting 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ for 
+\begin_inset Formula $\theta$
+\end_inset
+
+, we get the expression for 
+\end_layout
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $-\frac{\partial}{\partial c_{i}}E(\mathbf{h},\mathbf{v})=\frac{\partial}{\partial c_{i}}\Sigma_{i}c_{i}v_{i}=c_{i}$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+*Not sure about the difference between h' and h or v' and v
+\end_layout
+
+\begin_layout Standard
+Note: computing the first term is called 
+\begin_inset Quotes eld
+\end_inset
+
+positive phase
+\begin_inset Quotes erd
+\end_inset
+
+, the sec
+\begin_inset Formula $ $
+\end_inset
+
+ond term is called 
+\begin_inset Quotes eld
+\end_inset
+
+negative phase
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The first term is easy to compute (see below).
+ However, the second term is difficult (intractable) to compute (or approximate)
+ since it will require 
+\begin_inset Quotes eld
+\end_inset
+
+infinite
+\begin_inset Quotes erd
+\end_inset
+
+ steps of Gibbs sampling to sample from the equilibrium (stationary) distributio
+n of 
+\begin_inset Formula $P_{\theta}(\mathbf{v},\mathbf{h})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise 5 (Positive phase)
+\series default
+.
+ Derive the first term in a concrete form (hint: combine the results of
+ Exercise 1 and 4).
+ For example, confirm that:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathbb{E}_{\mathbf{h}\sim P_{\theta}(\mathbf{h}|\mathbf{v})}\left[v_{i}h_{j}\right] & = & P(h_{j}=1|\mathbf{v})v_{i}\\
+ & = & sigmoid(\sum_{i}W_{ij}v_{i}+b_{j})v_{i}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\begin_layout Plain Layout
+We know from Exercise 1 that:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $P(h_{j}=1|\mathbf{v})=sigmoid(W_{j}\mathbf{v}+b_{j})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $P(h_{j}=1|\mathbf{v})=sigmoid(\Sigma_{i}W_{ij}v_{i}+b_{j})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $P(h_{j}=1|\mathbf{v})=sigmoid(\Sigma_{i}W_{ij}v_{i}+b_{j})v_{i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since computing the second term is intractable, we use so called 
+\begin_inset Quotes eld
+\end_inset
+
+contrastive diverge
+\begin_inset Quotes erd
+\end_inset
+
+ approximation where the second term is computed from truncated k-step Gibbs
+ sampling.
+ I.e., 
+\end_layout
+
+\begin_layout Enumerate
+Initialize 
+\begin_inset Formula $\mathbf{v}^{0}=\mathbf{v}.$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Sample 
+\begin_inset Formula $\mathbf{h}^{0}\sim P(\mathbf{h}|\mathbf{v}^{0})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Repeat for 
+\begin_inset Formula $t=1,...,k$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Sample 
+\begin_inset Formula $\mathbf{v}^{t}\sim P(\mathbf{v}|\mathbf{h}^{t-1})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Sample 
+\begin_inset Formula $\mathbf{h}^{t}\sim P(\mathbf{h}|\mathbf{v}^{t})$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Putting together, we get the following contrastive approximation:
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial W_{ij}}\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)}) & = & \frac{1}{m}\sum_{l=1}^{m}v_{i}^{(l)}P(h_{j}=1|\mathbf{v}^{(l)})-\frac{1}{m}\sum_{l=1}^{m}\hat{v}_{i}^{(l)}P(h_{j}^{t}=1|\mathbf{\hat{v}}^{(l)})\\
+\frac{\partial}{\partial b_{j}}\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)}) & = & \frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})-\frac{1}{m}\sum_{l=1}^{m}P(h_{j}^{t}=1|\mathbf{\hat{v}}^{(l)})\\
+\frac{\partial}{\partial c_{i}}\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)}) & = & \frac{1}{m}\sum_{l=1}^{m}v_{i}^{(l)}-\frac{1}{m}\sum_{l=1}^{m}\hat{v}_{i}^{(l)}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+here, we used 
+\begin_inset Formula $\hat{\mathbf{v}}^{(l)}$
+\end_inset
+
+ to denote negative samples from k-step Gibbs sampling starting from 
+\series bold
+
+\begin_inset Formula $\mathbf{v}^{(l)}$
+\end_inset
+
+
+\series default
+ (actual training sample).
+ This complete the derivation of contrastive divergence approximation, which
+ can be implemented in a few lines of matlab code.
+\end_layout
+
+\begin_layout Paragraph
+Remarks
+\end_layout
+
+\begin_layout Standard
+Contrastive divergence works well since we can compute the first term exactly.
+ Therefore, computing the second term approximately in a rough way doesn't
+ hurt too much.
+ (Intuitively, you can optimize the objective function if you get the 
+\begin_inset Quotes eld
+\end_inset
+
+sign
+\begin_inset Quotes erd
+\end_inset
+
+ of the derivative correct, even if you cannot exactly compute the gradient.)
+ In practice, contrastive divergence is very effective when you can do tractable
+ posterior inference, i.e., computing 
+\begin_inset Formula $P(\mathbf{h}|\mathbf{v})$
+\end_inset
+
+ exactly.
+ Therefore, for some other models where you cannot compute the first term
+ exactly, you may want to be cautious about using contrastive divergence
+ blindly (e.g., make sure you compute the first term accurately (or approximately)
+ and run longer steps of Gibbs sampling for CD).
+\end_layout
+
+\begin_layout Section
+RBM with real-valued visible units
+\end_layout
+
+\begin_layout Standard
+The joint distribution and the energy function of the RBM with real-valued
+ input data can be described as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(\mathbf{v},\mathbf{h}) & = & \frac{1}{Z}\exp(-E(\mathbf{v},\mathbf{h}))\\
+E(\mathbf{v},\mathbf{h}) & = & -\frac{1}{\sigma}\sum_{ij}v_{i}W_{ij}h_{j}-\sum_{j}b_{j}h_{j}+\frac{1}{2\sigma^{2}}\sum_{i}(v_{i}-c_{i})^{2}\\
+ & = & -\frac{1}{\sigma}\mathbf{v}^{T}\mathbf{W}\mathbf{h}-\mathbf{b}^{T}\mathbf{h}+\frac{1}{2\sigma^{2}}\mathbf{v}^{T}\mathbf{v}-\frac{1}{\sigma^{2}}\mathbf{c}^{T}\mathbf{v}+constant
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, 
+\begin_inset Formula $\mathbf{v}\in\mathbb{R}^{D}$
+\end_inset
+
+ are 
+\bar under
+real-valued
+\bar default
+ visible units, 
+\begin_inset Formula $\mathbf{h}\in\{0,1\}^{K}$
+\end_inset
+
+ are binary hidden units, 
+\begin_inset Formula $W$
+\end_inset
+
+ are weights between hidden units and visible units, 
+\begin_inset Formula $c$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ are biases, and 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ is a term that controls noise (or variance) in the visible units.
+ The second equation is written in vector-matrix form.
+\end_layout
+
+\begin_layout Subsection
+Conditional distribution
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise
+\series default
+ 
+\series bold
+6
+\series default
+.
+ Prove that the conditional distribution can be written as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(h_{j}=1|\mathbf{v}) & = & sigmoid(\frac{1}{\sigma}\sum_{i}W_{ij}v_{i}+b_{j})\\
+P(v_{i}|\mathbf{h}) & = & \mathcal{N}(\sigma\sum_{j}W_{ij}h_{j}+c_{i},\sigma^{2})
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\mathcal{N}(\cdot,\cdot)$
+\end_inset
+
+ is a Gaussian distribution.
+ This can be also written in a vectorized form:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+P(h_{j}=1|\mathbf{v}) & = & sigmoid(\frac{1}{\sigma}(\mathbf{W}^{T}\mathbf{v})_{j}+b_{j})\\
+P(\mathbf{v}|\mathbf{h}) & = & \mathcal{N}(\sigma\mathbf{W}\mathbf{h}+\mathbf{c},\sigma^{2}\mathbf{I})
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As in the binary RBM, we can perform Gibbs sampling for Gaussian RBM in
+ a similar way.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Contrastive Divergence
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Exercise 7.
+
+\series default
+ Show that the contrastive divergence update rule for the Gaussian RBM is
+ given as follows:
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial W_{ij}}\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)}) & = & \frac{1}{\sigma}\left(\frac{1}{m}\sum_{l=1}^{m}v_{i}^{(l)}P(h_{j}=1|\mathbf{v}^{(l)})-\frac{1}{m}\sum_{l=1}^{m}\hat{v}_{i}^{(l)}P(h_{j}^{t}=1|\mathbf{\hat{v}}^{(l)})\right)\\
+\frac{\partial}{\partial b_{j}}\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)}) & = & \frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})-\frac{1}{m}\sum_{l=1}^{m}P(h_{j}^{t}=1|\mathbf{\hat{v}}^{(l)})\\
+\frac{\partial}{\partial c_{i}}\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)}) & = & \frac{1}{\sigma^{2}}\left(\frac{1}{m}\sum_{l=1}^{m}v_{i}^{(l)}-\frac{1}{m}\sum_{l=1}^{m}\hat{v}_{i}^{(l)}\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+
+\series bold
+Solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Sparse RBM
+\end_layout
+
+\begin_layout Standard
+(See also: UFLDL tutorial exercise #1 for sparse autoencoder.)
+\end_layout
+
+\begin_layout Standard
+Motivated from the success of sparse coding, we can impose sparsity in the
+ hidden unit representation.
+ One way to do that is adding a regularizer in the training objective:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{1}{m}\sum_{l=1}^{m}\log P(\mathbf{v}^{(l)})+\mathcal{L}_{sparsity}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, the sparsity penalty can be defined as follows:
+\end_layout
+
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\noun off
+\color none
+\begin_inset Formula 
+\begin{eqnarray*}
+\mathcal{L}_{sparsity} & = & \lambda\sum_{j}d\left(p,\frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the 
+\begin_inset Formula $d(\cdot,\cdot)$
+\end_inset
+
+ is a distance function, and 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is a regularization constant.
+ In practice, L2 distance or KL-divergence can be used.
+ For the case of KL divergence, we simply follow the derivation as follows
+ (for the case of binary RBM).
+ First, the KL divergence is defined as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+KL(p,\hat{p})=p\log\frac{p}{\hat{p}}+(1-p)\log\frac{1-p}{1-\hat{p}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and we can set 
+\begin_inset Formula $\hat{p}=\frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})$
+\end_inset
+
+.
+ The detailed derivation is as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial\theta}\mathcal{L}_{sparsity} & = & \lambda\sum_{j}\mathbf{\frac{\partial}{\partial\theta}}KL\left(p,\frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})\right)\\
+ & = & \lambda\sum_{j}\left[-p\frac{\partial}{\partial\theta}\log\left(\frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})\right)-(1-p)\frac{\partial}{\partial\theta}\log\left(1-\frac{1}{m}\sum_{l=1}^{m}P(h_{j}=1|\mathbf{v}^{(l)})\right)\right]\\
+ & = & \lambda\sum_{j}\left[-p\frac{\frac{1}{m}\sum_{l=1}^{m}\frac{\partial}{\partial\theta}P(h_{j}=1|\mathbf{v}^{(l)})}{\hat{p}}+(1-p)\frac{\frac{1}{m}\sum_{l=1}^{m}\frac{\partial}{\partial\theta}P(h_{j}=1|\mathbf{v}^{(l)})}{1-\hat{p}}\right]\\
+ & = & \lambda\sum_{j}\left[-\frac{p}{\hat{p}}+\frac{1-p}{1-\hat{p}}\right]\left(\frac{1}{m}\sum_{l=1}^{m}\frac{\partial}{\partial\theta}P(h_{j}=1|\mathbf{v}^{(l)})\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore, 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial W_{ij}}\mathcal{L}_{sparsity} & = & \lambda\left[-\frac{p}{\hat{p}}+\frac{1-p}{1-\hat{p}}\right]\left(\frac{1}{m}\sum_{l=1}^{m}\frac{\partial}{\partial W_{ij}}P(h_{j}=1|\mathbf{v}^{(l)})\right)\\
+ & = & \lambda\left[-\frac{p}{\hat{p}}+\frac{1-p}{1-\hat{p}}\right]\left(\frac{1}{m}\sum_{l=1}^{m}\sigma_{j}^{(l)}(1-\sigma_{j}^{(l)})v_{i}^{(l)}\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial}{\partial b_{j}}\mathcal{L}_{sparsity} & = & \lambda\left[-\frac{p}{\hat{p}}+\frac{1-p}{1-\hat{p}}\right]\left(\frac{1}{m}\sum_{l=1}^{m}\frac{\partial}{\partial b_{j}}P(h_{j}=1|\mathbf{v}^{(l)})\right)\\
+ & = & \lambda\left[-\frac{p}{\hat{p}}+\frac{1-p}{1-\hat{p}}\right]\left(\frac{1}{m}\sum_{l=1}^{m}\sigma_{j}^{(l)}(1-\sigma_{j}^{(l)})\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $v_{i}^{(l)}=P(h_{j}=1|\mathbf{v}^{(l)})=sigmoid(\sum_{i}W_{ij}v_{i}^{(l)}+b_{j})$
+\end_inset
+
+ for the binary RBM.
+ 
+\end_layout
+
+\begin_layout Standard
+Note: For Gaussian RBM, 
+\begin_inset Formula $v_{i}^{(l)}=P(h_{j}=1|\mathbf{v}^{(l)})=sigmoid(\frac{1}{\sigma}\sum_{i}W_{ij}v_{i}^{(l)}+b_{j})$
+\end_inset
+
+, so there is a subtle difference.
+ 
+\end_layout
+
+\end_body
+\end_document
