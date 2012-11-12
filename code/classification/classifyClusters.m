@@ -1,4 +1,4 @@
-function classifyClusters(clusterLocation, model)
+function classifyClusters(clusterLocation, encoder, model)
 addpath(genpath('/home/charlie/Desktop/research/code/library/'));
 % performs binary classification on segmentation results
 % path is the location of the cluster pcd files
@@ -32,11 +32,12 @@ for i = 1:length(nameFolds)
     feat.height = size(feaArr,2);
     feat.x = [1:size(feaArr,2)];
     feat.y = [1:size(feaArr,2)];
-    save(matFileName,'feat');
+    % save(matFileName,'feat');
     % then do pooling
-    
-    
+    pool = pooling(feat, encoder, parameters);
     % then apply them to trained models
     
+    % save the pool
+    save(matFileName,'pool');
 end
 end
