@@ -99,24 +99,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named don_segmentation
+# Target rules for targets named don
 
 # Build rule for target.
-don_segmentation: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 don_segmentation
-.PHONY : don_segmentation
+don: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 don
+.PHONY : don
 
 # fast build rule for target.
-don_segmentation/fast:
-	$(MAKE) -f CMakeFiles/don_segmentation.dir/build.make CMakeFiles/don_segmentation.dir/build
-.PHONY : don_segmentation/fast
+don/fast:
+	$(MAKE) -f CMakeFiles/don.dir/build.make CMakeFiles/don.dir/build
+.PHONY : don/fast
 
 distanceNormals.o: distanceNormals.cpp.o
 .PHONY : distanceNormals.o
 
 # target to build an object file
 distanceNormals.cpp.o:
-	$(MAKE) -f CMakeFiles/don_segmentation.dir/build.make CMakeFiles/don_segmentation.dir/distanceNormals.cpp.o
+	$(MAKE) -f CMakeFiles/don.dir/build.make CMakeFiles/don.dir/distanceNormals.cpp.o
 .PHONY : distanceNormals.cpp.o
 
 distanceNormals.i: distanceNormals.cpp.i
@@ -124,7 +124,7 @@ distanceNormals.i: distanceNormals.cpp.i
 
 # target to preprocess a source file
 distanceNormals.cpp.i:
-	$(MAKE) -f CMakeFiles/don_segmentation.dir/build.make CMakeFiles/don_segmentation.dir/distanceNormals.cpp.i
+	$(MAKE) -f CMakeFiles/don.dir/build.make CMakeFiles/don.dir/distanceNormals.cpp.i
 .PHONY : distanceNormals.cpp.i
 
 distanceNormals.s: distanceNormals.cpp.s
@@ -132,7 +132,7 @@ distanceNormals.s: distanceNormals.cpp.s
 
 # target to generate assembly for a file
 distanceNormals.cpp.s:
-	$(MAKE) -f CMakeFiles/don_segmentation.dir/build.make CMakeFiles/don_segmentation.dir/distanceNormals.cpp.s
+	$(MAKE) -f CMakeFiles/don.dir/build.make CMakeFiles/don.dir/distanceNormals.cpp.s
 .PHONY : distanceNormals.cpp.s
 
 # Help Target
@@ -141,7 +141,7 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... don_segmentation"
+	@echo "... don"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... distanceNormals.o"
