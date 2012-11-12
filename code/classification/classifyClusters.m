@@ -8,6 +8,11 @@ disp(matDir);
 if (~exist(matDir,'dir'))
     mkdir(matDir);
 end
+% parameters
+radius = 1;
+imgW = 16;
+minN = 10;
+
 d = dir(clusterLocation);
 nameFolds = {d.name}';
 nameFolds(ismember(nameFolds,{'.','..'})) = [];
@@ -16,11 +21,18 @@ for i = 1:length(nameFolds)
     disp(pcdFile);
     pc = pcd2mat(pcdFile);
     [~,y,z] = fileparts(pcdFile);
-    matFileName = fullfile(matDir,strcat(y,z));
+    matFileName = fullfile(matDir,strcat(y,'.mat'));
     disp(matFileName);
     save(matFileName,'pc');
     % then compute spin images on them
-    cal_spinImages_feat(strcat(y,z), matDir,pc,1,16,10)
+    feaArr = compSpinImages(pc', radius, imgW, minN);
+    feaArr = reshape(feaArr,imgW*imgW,size(pc,2));
+    feat.feaArr = single(feaArr);
+    feat.width = size(feaArr,2);
+    feat.height = size(feaArr,2);
+    feat.x = [1:size(feaArr,2)];
+    feat.y = [1:size(feaArr,2)];
+    save(matFileName,'feat');
     % then do pooling
     
     % then apply them to trained models
