@@ -9,6 +9,7 @@ carFolders = {d(isub).name}';
 carFolders(ismember(carFolders,{'.','..'})) = [];
 mergePrefix = '/home/charlie/Desktop/research/code/utilities/c/mergePCD/test/mergeAll';
 for i = 1:length(carFolders)
+    disp(cell2mat(carFolders(i)));
     carpcds = strcat(cell2mat(carFolders(i)), '/don/classified/pcd/car_*.pcd');
     carpcdDir = fullfile(targetHasCar,strcat(cell2mat(carFolders(i)), '/don/classified/pcd/'));
     notpcds = strcat(cell2mat(carFolders(i)), '/don/classified/pcd/not_*.pcd');
@@ -35,5 +36,4 @@ for i = 1:length(carFolders)
     arguments = sprintf('%s -o %s',arguments, notpcdLoc);
     mergeCmd = sprintf('%s %s', mergePrefix, arguments);
     system(mergeCmd);
-    x = 1;
 end
