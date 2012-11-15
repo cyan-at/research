@@ -1,5 +1,5 @@
 git pull
 git add .
 echo $@
-git commit -m "changes $@"
+git commit -m "$@"
 git push
