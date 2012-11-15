@@ -37,3 +37,6 @@ CMakeCache.txt
 
 # Directory files
 .directory
+
+# pcd files in general
+*.pcd
