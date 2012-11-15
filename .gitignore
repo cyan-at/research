@@ -34,3 +34,6 @@ CMakeCache.txt
 
 # DS_Store
 .DS_Store
+
+# Directory files
+.directory
