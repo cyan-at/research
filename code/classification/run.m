@@ -31,29 +31,3 @@ for i = 1:length(noCarFolders)
     disp(clusterLoc);
     classifyClusters(clusterLoc, encoder, model, parameters);
 end
-%% this part of the code will call merge on all of the labelled clusters
-merge_all_path = '/home/charlie/Desktop/research/code/utilities/c/mergePCD/test/mergeAll %s -o %s';
-for i = 1:length(carFolders)
-    carpcds = strcat(cell2mat(carFolders(i)), '/don/classified/pcd/car_*.pcd');
-    notpcds = strcat(cell2mat(carFolders(i)), '/don/classified/pcd/not_*.pcd');
-    carInfiles = fullfile(targetHasCar,carpcds);
-    notInfiles = fullfile(targetHasCar, notpcds);
-    carNames = evalc(sprintf('ls %s', carInfiles));
-    notNames = evalc(sprintf('ls %s', notInfiles));
-    disp(carNames);
-    disp(notNames);
-end
-
-for i = 1:length(noCarFolders)
-    carpcds = strcat(cell2mat(noCarFolders(i)), '/don/classified/pcd/car_*.pcd');
-    notpcds = strcat(cell2mat(noCarFolders(i)), '/don/classified/pcd/not_*.pcd');
-    carInfiles = fullfile(targetNoCar,carpcds);
-    notInfiles = fullfile(targetNoCar, notpcds);
-    mergeCarCmd = sprintf(merge_all_path, carpcds, 
-    mergeNotCmd = 
-    disp(clusterLoc);
-    classifyClusters(clusterLoc, encoder, model, parameters);
-end
-
-
-
