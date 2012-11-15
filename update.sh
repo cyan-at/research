@@ -1,6 +1,5 @@
 git pull
 git add .
-echo "\"$@\""
-x = "\"$@\""
-git commit -m x
+echo $@
+git commit -m "changes $@"
 git push
