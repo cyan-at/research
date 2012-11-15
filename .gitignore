@@ -40,3 +40,7 @@ CMakeCache.txt
 
 # pcd files in general
 *.pcd
+
+# temporary c files
+*.cpp~
+*.h~
