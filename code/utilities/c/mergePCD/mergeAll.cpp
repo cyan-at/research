@@ -28,34 +28,16 @@ int main (int argc, char** argv){
     ///The file to read from.
     vector<string>* infiles = new vector<string>;
     string outfile;
-    // specify the options
-    static struct option long_options[] = {
-        {"infiles", required_argument, 0, 'i'},
-        {"outfile", required_argument, 0, 'o'}
-    };
-    while (1){
-        // getopt_long stores the option index here
-        int option_index = 0;
-        int c = getopt_long (argc, argv, "i:o:", long_options, &option_index);
-        if (c == -1)
-            break;
-        switch (c){
-            case 0:
-                break;
-            case 'i':
-            {
-                // cout << optarg << endl;
-                vector<string> x = split(optarg, '_');
-                // infiles->push(optarg);
-                // cout << x.size() << endl;
-                *infiles = x;
-                break;       
-            }
-            case 'o':
-                outfile = optarg;
-                break;
-            default:
-                exit (1);
+    vector<string> v(argv, argv+argc);
+    //cout << v.size() << endl;
+    for (int i = 1; i < v.size(); ++i){
+        if (i < v.size()-2){
+            //cout << "inputs: " << v.at(i) << endl;
+            infiles->push_back(v.at(i));
+        }
+        else if (i == v.size()-1){
+            //cout << "outputs: " << v.at(i) << endl;
+            outfile = v.at(i);
         }
     }
     // cout << infiles->size() << endl;
