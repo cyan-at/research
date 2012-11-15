@@ -1,9 +1,7 @@
-function [ pcdFile ] = mat2pcd( obj, targetFileName )
-% This function takes the mat files that store point clouds of the Ford /
-% Toyota data set
-% assumes that the obj has a field 'pointcloud' that is a matrix of 3 x N
-% saves the pcd file to some directory specified by 'targetFileName'
-pc = obj.pointcloud';
-
+function mat2pcd(pointcloud, saveName)
+%assumes that pointcloud is a N x 3 matrix of values
+%converts the file to PCD format somewhat and saves it at saveName
+fileID = fopen(saveName,'w');
+fprintf(fid, 'Hello!\n');
+fclose(fileID);
 end
-
