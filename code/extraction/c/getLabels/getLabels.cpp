@@ -10,7 +10,6 @@
 // If the count for the filtered out from cars.pcd is 0, then it wasn't
 // clustered
 // Otherwise, the clustering + classification successfully labeled the car
-#include <boost/program_options.hpp>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/common/point_operators.h>
@@ -26,7 +25,6 @@
 using namespace pcl;
 using namespace std;
 
-namespace po = boost::program_options;
 
 int main(int argc, char **argv){
 	///The file to read from.
@@ -43,32 +41,6 @@ int main(int argc, char **argv){
 
 	///The kitti frame id
 	int frameid;
-
-	// Declare the supported options.
-	po::options_description desc("Program options");
-	desc.add_options()
-		//Program mode option
-		("help", "produce help message")
-		//Options
-		("infile", po::value<string>(&infile)->required(), "the file to read a point cloud from")
-		("tracklets", po::value<string>(&trackletfile)->required(), "the file to read kitti tracklet annotations from")
-		("frameid", po::value<int>(&frameid)->required(), "the kitti frame id")
-		("outfile", po::value<string>(&outfile)->required(), "the file prefix to write the tracklet segmentations to")
-		("type", po::value<string>(&objtype), "the name of the object type to extract (default: all)")
-		;
-	// Parse the command line
-	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
-
-	// Print help
-	if (vm.count("help"))
-	{
-		cout << desc << "\n";
-		return false;
-	}
-
-	// Process options.
-	po::notify(vm);
 
 	Tracklets *tracklets = new Tracklets();
 	if (!tracklets->loadFromFile(trackletfile)){
