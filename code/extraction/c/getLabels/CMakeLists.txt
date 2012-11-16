@@ -1,15 +1,9 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(getLabels)
 find_package(PCL 1.7 REQUIRED)
-find_package(BOOST)
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
-
-includ_directories(${BOOST_INCLUDE_DIRS})
-link_directories(${BOOST_LIBRARY_DIRS})
-add_definitions(${BOOST_DEFINITIONS})
-
 add_executable (getLabels.out getLabels.cpp)
-target_link_libraries (getLabels.out ${PCL_LIBRARIES} ${BOOST_LIBRARIES})
+target_link_libraries (getLabels.out ${PCL_LIBRARIES})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -w")
