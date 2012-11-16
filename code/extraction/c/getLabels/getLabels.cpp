@@ -1,15 +1,3 @@
-// Input: tracklet file location
-// Input: cars.pcd, nots.pcd file locations
-// Input: identifier for frame within the tracklet
-
-// Routine:
-// Scan through the tracklet file picking up every object in the original 
-// point cloud
-// For each car object found in this point cloud, look at that location
-// within cars.pcd, within nots.pcd
-// If the count for the filtered out from cars.pcd is 0, then it wasn't
-// clustered
-// Otherwise, the clustering + classification successfully labeled the car
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/common/point_operators.h>
@@ -19,12 +7,12 @@
 
 #include <iostream>
 #include <fstream>
-
+#include <string>
+#include <getopt.h>
 #include "tracklets.h"
 
 using namespace pcl;
 using namespace std;
-
 
 int main(int argc, char **argv){
 	///The file to read from.
@@ -41,6 +29,42 @@ int main(int argc, char **argv){
 
 	///The kitti frame id
 	int frameid;
+
+	static struct option long_options[] = {
+		{"infile", required_argument, 0, 'i'},
+		{"outfile", required_argument, 0, 'o'},
+		{"trackletfile", required_argument, 0, 't'},
+		{"type", required_argument, 0, 'y'},
+		{"frameid", required_argument, 0, 'f'}
+	};
+	while (1){
+		// getopt_long stores the option index here
+		int option_index = 0;
+		int c = getopt_long (argc, argv, "i:o:t:y:f:", long_options, &option_index);
+		if (c == -1)
+			break;
+		switch (c){
+			case 0:
+				break;
+			case 'i':
+				infile = optarg;
+				break;
+			case 'o':
+				outfile = optarg;
+				break;
+			case 't':
+				trackletfile = optarg;
+				break;
+			case 'y':
+				objtype = optarg;
+				break;
+			case 'f':
+				frameid = atoi(optarg);
+				break;
+			default:
+				exit (1);
+		}
+	}
 
 	Tracklets *tracklets = new Tracklets();
 	if (!tracklets->loadFromFile(trackletfile)){
@@ -72,6 +96,12 @@ int main(int argc, char **argv){
 			Tracklets::tPose *pose;
 			if(tracklets->getPose(i, frameid, pose)){
 				outcloud.reset(new pcl::PointCloud<PointXYZI>);
+				cout << "Pose rx" << pose->rx << endl;
+				cout << "Pose ry" << pose->ry << endl;
+				cout << "Pose rz" << pose->rz << endl;
+				cout << "Pose tx" << pose->tx << endl;
+				cout << "Pose ty" << pose->ty << endl;
+				cout << "Pose tz" << pose->tz << endl;
 				clipper.setTranslation(Eigen::Vector3f(pose->tx, pose->ty, pose->tz));
 				clipper.setRotation(Eigen::Vector3f(pose->rx, pose->ry, pose->rz));
 				clipper.setMin(-Eigen::Vector4f(tracklet->l/2, tracklet->w/2, 0, 0));
@@ -79,7 +109,8 @@ int main(int argc, char **argv){
 				clipper.filter(*outcloud);
 
 				stringstream outfilename;
-				outfilename << outfile << tracklet->objectType << i << ".pcd";
+				outfilename << outfile << ".pcd";
+				//outfilename << outfile << tracklet->objectType << i << ".pcd";
 
 				if(!outcloud->empty()){
 					cout << "Found "<<outcloud->size() << " points, writing to " << outfilename.str() << endl;
@@ -91,5 +122,6 @@ int main(int argc, char **argv){
 		}
 
 	}
+
     delete tracklets;
 }
