@@ -1,10 +1,10 @@
-// This program takes a given tracklet file and pcd and files all of the objects within it that are labeled for a given frame number
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/common/point_operators.h>
 #include <pcl/common/io.h>
 #include <pcl/io/vtk_io.h>
 #include <pcl/filters/crop_box.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -17,14 +17,19 @@ using namespace std;
 int main(int argc, char **argv){
 	///The file to read from.
 	string infile;
+
 	///The file to read tracklets from.
 	string trackletfile;
+
 	///The file to output to.
 	string outfile;
+
 	///The object type to extract
 	string objtype;
+
 	///The kitti frame id
 	int frameid;
+
 	static struct option long_options[] = {
 		{"infile", required_argument, 0, 'i'},
 		{"outfile", required_argument, 0, 'o'},
@@ -60,21 +65,26 @@ int main(int argc, char **argv){
 				exit (1);
 		}
 	}
+
 	Tracklets *tracklets = new Tracklets();
 	if (!tracklets->loadFromFile(trackletfile)){
 		cerr << "Could not read tracklets file: " << trackletfile << endl;
 	}
+
 	// Load cloud in blob format
 	sensor_msgs::PointCloud2 blob;
 	pcl::io::loadPCDFile (infile.c_str(), blob);
-	pcl::PointCloud<PointXYZ>::Ptr cloud (new pcl::PointCloud<PointXYZ>);
+
+	pcl::PointCloud<PointXYZI>::Ptr cloud (new pcl::PointCloud<PointXYZI>);
 	cout << "Loading point cloud...";
 	pcl::fromROSMsg (blob, *cloud);
 	cout << "done." << endl;
-	pcl::CropBox<PointXYZ> clipper;
+
+	pcl::CropBox<PointXYZI> clipper;
 	clipper.setInputCloud(cloud);
+
 	pcl::PCDWriter writer;
-	pcl::PointCloud<PointXYZ>::Ptr outcloud;
+	pcl::PointCloud<PointXYZI>::Ptr outcloud;
 
 	//For each tracklet, extract the points
 	for(int i = 0; i < tracklets->numberOfTracklets(); i++){
@@ -85,17 +95,18 @@ int main(int argc, char **argv){
 		if(objtype.empty() || tracklet->objectType == objtype){
 			Tracklets::tPose *pose;
 			if(tracklets->getPose(i, frameid, pose)){
-				outcloud.reset(new pcl::PointCloud<PointXYZ>);
+				outcloud.reset(new pcl::PointCloud<PointXYZI>);
 				cout << "Pose rx" << pose->rx << endl;
 				cout << "Pose ry" << pose->ry << endl;
 				cout << "Pose rz" << pose->rz << endl;
 				cout << "Pose tx" << pose->tx << endl;
 				cout << "Pose ty" << pose->ty << endl;
 				cout << "Pose tz" << pose->tz << endl;
-				//Do nothing for now
+
 			}
 		}
+
 	}
 
-	return 0;
+    delete tracklets;
 }
