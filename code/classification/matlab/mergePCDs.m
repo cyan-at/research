@@ -16,4 +16,3 @@ function mergePCDs( directory, prefix, name)
     mergeCmd = sprintf('%s %s', mergePrefix, arguments);
     system(mergeCmd);
 end
-
