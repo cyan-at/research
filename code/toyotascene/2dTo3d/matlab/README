@@ -1,0 +1,9 @@
+To get the mapping, run load.sh on pcls and run map.m on ppms
+
+load.sh will call clickPCD binary with pcd as arguments and the output file
+
+To get the A matrix from these mappings, run 'readmap.m'
+
+Then run 'fetchRGB' that will go through each image/scan pair and for the pointcloud
+fetch rgb values given a xyz
+

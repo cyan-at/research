@@ -9,6 +9,7 @@
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/filters/conditional_removal.h>
 #include <pcl/segmentation/extract_clusters.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/features/don.h>
 using namespace pcl;
 using namespace std;
@@ -103,8 +104,10 @@ int main (int argc, char *argv[])
     doncloud = doncloud_filtered;
     // Save filtered output
     cout << "Filtered Pointcloud: " << doncloud->points.size() << " data points." << endl;
+	
     string combined = outDir + "filtered.pcd";
     writer.write<pcl::PointNormal> (combined, *doncloud, false); 
+
     // Filter by magnitude
     cout << "Clustering using EuclideanClusterExtraction with tolerance <= " << segradius << "..." << endl;
     pcl::search::KdTree<PointNormal>::Ptr segtree (new pcl::search::KdTree<PointNormal>);
@@ -122,6 +125,7 @@ int main (int argc, char *argv[])
     int j = 0;
     for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it, j++)
     {
+	cout << "new cluster!" << endl;
         pcl::PointCloud<PointNormal>::Ptr cloud_cluster_don (new pcl::PointCloud<PointNormal>);
         for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
         {
