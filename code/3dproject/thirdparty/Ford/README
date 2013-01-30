@@ -1,0 +1,18 @@
+These functions are being made available for easy access and visualization 
+of the "Ford Campus Vision and Laser dataset".  
+You may not copy, sell or redistribute this software in whole or in part 
+without permission of the author. For further details, contact Gaurav Pandey 
+at pgaurav@umich.edu.
+
+THE AUTHOR MAKES NO REPRESENTATIONS OR WARRANTIES OF ANY KIND
+CONCERNING THIS SOFTWARE.
+
+This contains matlab functions which provides easy access to the dataset. Once you have
+downloaded the zip file from the website, you can unzip it to get the following files and 
+folders under the main directory-:
+Folders-: SCANS, IMAGES
+Files-: LCM.log, Timestamp.log, Pose-Applanix.log, Pose-Mtig.log, Gps.log, PARAM.mat
+
+The details about these files and folders can be found in the data paper "Ford Campus Vision and Laser dataset".
+One can load the individual Scan files present under the SCANS folder. 
+
