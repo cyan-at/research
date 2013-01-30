@@ -6,7 +6,8 @@ function [ catalog ] = catalogue( path, extension )
     for i = 1:length(fpath)
         matName = fpath(i).name;
         first_char = matName(1);
-        if (~strcmp(matName,'featureMatrix.mat')) && (~strcmp(first_char,'.')) && (~strcmp(matName, 'parameters.txt'))
+        [~,~,ext] = fileparts(matName);
+        if (strcmp(strcat('.',extension),ext) && (~strcmp(first_char,'.')))
             catalog{end+1} = fullfile(path, matName);
         end
     end
