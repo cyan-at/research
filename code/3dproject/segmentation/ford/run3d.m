@@ -1,6 +1,7 @@
 %this code will run through the ford data set and apply 3D segmentation to
 %all pointclouds
 addpath '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/library/functions/';
+addpath '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/utilities/matlab/mat2pcd/';
 dataRoot = '/mnt/neocortex/scratch/jumpbot/data/3dproject/Ford/';
 scanFolderRoot = '/mnt/neocortex/scratch/jumpbot/data/3dproject/FordScans/';
 if (~exist(scanFolderRoot,'dir')); mkdir(scanFolderRoot); end;
@@ -44,7 +45,7 @@ for i = 1:length(scans)
 	disp(y);
 end
 end
-start = true;
+start = false;
 if (start)
 %%in this section we will extract pcl from every scan file and run DON
 %%clustering
@@ -53,10 +54,17 @@ for i = 1:length(scans)
 	%mkdir a directory with the name being this scan's name
 	[~,y,~] = fileparts(scanFile);
 	scanDir = strcat(scanFolderRoot,y,'/');
+    targetMatName = strcat(scanDir,y,'.mat');
 	%grab the ppm from the obj and copy it over to the scan directory
     clear SCAN; load(targetMatName);
     pc = SCAN.XYZ;
-    mat2pcd(
+    targetPCDName = strcat(scanDir,y,'.pcd');
+    mat2pcd(pc',targetPCDName);
 	disp(y);
 end
+end
+start = true
+if (start)
+%% In this section of code we will remove statistical outliers and extract DON from the PCD point clouds
+
 end
