@@ -54,7 +54,6 @@ for i = 1:length(nameFolds)
         mkdir(targetDir);
         mkdir(fullfile(targetDir,'/cluster'));
     else
-        
     end
     if (~exist(fullfile(targetDir, '/cluster'),'dir'))
         disp(fullfile(targetDir,'/cluster'));
