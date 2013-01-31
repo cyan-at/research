@@ -21,5 +21,5 @@ for i = 1:length(scans)
     disp('writing to pcd');
     mat2pcdrgb(pc, rgb, idx, saveName);
     combined = [pc(idx,:),rgb(idx,:)];
-    save('combined.mat','combined');
+    save(strcat(scanDir,'combined.mat'),'combined');
 end
