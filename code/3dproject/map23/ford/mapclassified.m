@@ -3,7 +3,7 @@ scanFolderRoot = '/mnt/neocortex/scratch/jumpbot/data/3dproject/FordScans/';
 addpath(genpath(strcat(researchPath,'/library/')));
 scans = catalogue(scanFolderRoot,'folder');
 q = length(scans);
-for i = 1:q
+for i = 100:q
     %these are folders, for each folder, get the classified directory, and
     close all;
     

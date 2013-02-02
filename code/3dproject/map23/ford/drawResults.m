@@ -50,8 +50,10 @@ for camindex = 0:4
     [highx highy v2h]= distort_pixels(coordinates(valids,4) ,coordinates(valids,3),squeeze(MappingMatrix),row+1,col+1);
     v = intersect(v2l, v2h);
     coordinates = [lowy(v), lowx(v), highy(v), highx(v)];
-    coordinates = repmat((yoffset)*[1 0 1 0],size(coordinates,1),1) + repmat([1 1 1 1],size(coordinates,1),1) .* coordinates;
-    bboxes = [bboxes; coordinates];
+    if (~isempty(coordinates))
+        coordinates = repmat((yoffset)*[1 0 1 0],size(coordinates,1),1) + repmat([1 1 1 1],size(coordinates,1),1) .* coordinates;
+        bboxes = [bboxes; coordinates];
+    end
 end
 
 bboxes = num2cell(bboxes,2);
