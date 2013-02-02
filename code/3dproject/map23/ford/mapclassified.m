@@ -16,28 +16,26 @@ for i = 1:1
     bndboxes = [];
     disp('finding bounding boxes');
     %bndboxes is a n x 4 matrix of bndboxes
-    for j = 1:1
-        [bndbox cam] = readClusterAndMap(cell2mat(cars(j)));
-        if (isempty(bndbox)); continue; end;
-        %add bndbox to a list of bndboxes;
-        bndboxes = [bndboxes; bndbox];
-    end
+    t = 45;
+    disp(cell2mat(cars(t)));
+    [bndbox cam] = readClusterAndMap(cell2mat(cars(t)));
+    if (isempty(bndbox)); continue; end;
+    %add bndbox to a list of bndboxes;
+    bndboxes = [bndboxes; bndbox];
     %display your results
     uniquecam = unique(cam);
     close all;
-    for i = 1:1
-        figure;
-        c = uniquecam(i);
-        im_name = strcat(scanFolderRoot,scanFolder,'/image',num2str(c-1),'.ppm');
-        I = imread(im_name);
-        I = imresize(I, [1232,1616]);
-        I_rotated = imrotate(I, -90);
-        I_rotated = flipdim(I_rotated,2);
-        %draw bounding boxs on pixel
-        for j = 1:1
-            bboxes{j} = bndboxes(j,:);
-        end
-        showboxes_color(I_rotated, bboxes, 'b');
-        waitforbuttonpress;
-    end
+    figure;
+    c = uniquecam(1);
+    im_name = strcat(scanFolderRoot,scanFolder,'/image',num2str(c-1),'.ppm');
+    I = imread(im_name);
+    I = imresize(I, [1232,1616]);
+    I_rotated = imrotate(I, -90);
+    I_rotated = flipdim(I_rotated,2);
+    %draw bounding boxs on pixel
+    bboxes = {};
+    bboxes{1} = bndboxes(1,:);
+    %undistort the image
+    showboxes_color(I_rotated, bboxes, 'b');
+    waitforbuttonpress;
 end
