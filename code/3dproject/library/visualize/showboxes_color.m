@@ -24,18 +24,11 @@ for k=1:length(cell_boxes)
             x2(del) = [];
             y1(del) = [];
             y2(del) = [];
-%             if i == 1
-%                 c = [160/255 0 0];
-%                 s = '-';
-%             else
-%                 c = 'b';
-%                 s = '-';
-%             end
             c = mod(k,length(colors));
             if c == 0
                 c = length(colors);
             end
-            line([x1 x1 x2 x2 x1]', [y1 y2 y2 y1 y1]', 'color', colors(c), 'linewidth', 2, 'linestyle', '-');
+            line([x1 x1 x2 x2 x1]', [y1 y2 y2 y1 y1]', 'color', colors(c), 'linewidth', 0.5, 'linestyle', '-');
         end
     end
 end
