@@ -13,6 +13,7 @@
 #include <fstream>
 #include <string>
 #include <getopt.h>
+#include "/mnt/neocortex/scratch/jumpbot/research/code/3dproject/segmentation/ford/c/PointFord.h"
 
 using namespace pcl;
 using namespace std;
@@ -54,16 +55,16 @@ int main (int argc, char** argv)
   // Read in the cloud data
   pcl::PCDReader reader;
   pcl::PCDWriter writer;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>), cloud_f (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<PointFord>::Ptr cloud (new pcl::PointCloud<PointFord>), cloud_f (new pcl::PointCloud<PointFord>);
   reader.read (infile, *cloud);
   std::cout << "PointCloud before filtering has: " << cloud->points.size () << " data points." << std::endl; //*
 
   // Creating the KdTree object for the search method of the extraction
-  pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
+  pcl::search::KdTree<PointFord>::Ptr tree (new pcl::search::KdTree<PointFord>);
   tree->setInputCloud (cloud);
 
   std::vector<pcl::PointIndices> cluster_indices;
-  pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+  pcl::EuclideanClusterExtraction<PointFord> ec;
   ec.setClusterTolerance (h); // 2cm
   ec.setMinClusterSize (50);
   ec.setMaxClusterSize (100000);
@@ -74,7 +75,7 @@ int main (int argc, char** argv)
   int j = 0;
   for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
   {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<PointFord>::Ptr cloud_cluster (new pcl::PointCloud<PointFord>);
     for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
       cloud_cluster->points.push_back (cloud->points[*pit]); //*
     cloud_cluster->width = cloud_cluster->points.size ();
@@ -84,7 +85,7 @@ int main (int argc, char** argv)
     std::cout << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
     std::stringstream ss;
     ss << outDir << j << ".pcd";
-    writer.write<pcl::PointXYZ> (ss.str (), *cloud_cluster, false); //*
+    writer.write<PointFord> (ss.str (), *cloud_cluster, false); //*
     j++;
   }
 

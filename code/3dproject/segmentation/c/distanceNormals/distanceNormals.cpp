@@ -1,6 +1,3 @@
-// Difference of Normals Segmentation
-// Call this function on KITTI pcds with
-// parameters: (0.02 0.26 0.0001 15) clusters the ground
 #include <string>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
@@ -62,6 +59,7 @@ int main (int argc, char *argv[])
     cout << "Calculating normals for scale..." << scale1 << endl;
     pcl::PointCloud<PointNormal>::Ptr normals_small_scale (new pcl::PointCloud<PointNormal>);
     ne.setRadiusSearch (scale1);
+    cout << "computing!" << endl;
     ne.compute (*normals_small_scale);
     cout << "computed " << normals_small_scale->size() << endl;
     // calculate normals with the large scale
