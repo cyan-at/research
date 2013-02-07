@@ -1,4 +1,4 @@
-function drawResults(scanfolder, bndboxes, varargin)
+function bboxes = drawResults(scanfolder, bndboxes, varargin)
 %DRAWRESULTS draws classified results onto 2D space
 
 %show the full image
@@ -12,7 +12,7 @@ if(height == 616)
 end
 I_rotated = imrotate(I, -90);
 I_rotated = flipdim(I_rotated,2);
-figure, imshow(I_rotated);
+% figure, imshow(I_rotated);
 col = size(I,2) - 1;
 row = size(I,1)/5 - 1;
 
@@ -58,12 +58,12 @@ end
 
 bboxes = num2cell(bboxes,2);
 %finally show bboxes
-showboxes_color(I_rotated, bboxes, 'b');
+% showboxes_color(I_rotated, bboxes, 'b');
 
 %save to file
-if (nargin > 2)
-    disp('saving figure');
-    print(gcf, '-dpng', cell2mat(varargin(1)), '-r300');
-end
+% if (nargin > 2)
+%     disp('saving figure');
+%     print(gcf, '-dpng', cell2mat(varargin(1)), '-r300');
+% end
 end
 

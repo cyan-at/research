@@ -3,9 +3,9 @@ scanFolderRoot = '/mnt/neocortex/scratch/jumpbot/data/3dproject/FordScans/';
 addpath(genpath(strcat(researchPath,'/library/')));
 scans = catalogue(scanFolderRoot,'folder');
 q = length(scans);
-for i = 100:q
+for i = 1:q
     %these are folders, for each folder, get the classified directory, and
-    close all;
+    %close all;
     
     %find all of the pcs labeled cars
     scanFolder = cell2mat(scans(i));
@@ -25,7 +25,9 @@ for i = 100:q
     end
     %draw results
     detectionimage = strcat(scanFolderRoot,scanFolder,'/detection.png');
-    drawResults(strcat(scanFolderRoot,scanFolder),bndboxes,detectionimage);
+    bndboxesFull = drawResults(strcat(scanFolderRoot,scanFolder),bndboxes,detectionimage);
+    save(strcat(scanFolderRoot,scanFolder,'/bndboxes.mat'),'bndboxes');
+    save(strcat(scanFolderRoot,scanFolder,'/bndboxesFull.mat'),'bndboxesFull');
     %wait for user feedback, or save the image or construct matrix for CNN
-%     waitforbuttonpress;
+    %waitforbuttonpress;
 end
