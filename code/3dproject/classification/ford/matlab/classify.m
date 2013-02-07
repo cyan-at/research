@@ -12,7 +12,7 @@ parameters.pyramid = [1 2];
 scanFolderRoot = '/mnt/neocortex/scratch/jumpbot/data/3dproject/FordScans/';
 scans = catalogue(scanFolderRoot,'folder');
 q = length(scans);
-for i = 105:q
+for i = 1:q
     %these are folders, for each folder 
     scanFolder = cell2mat(scans(i));
     disp(scanFolder);
