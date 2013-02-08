@@ -11,6 +11,7 @@
 using namespace pcl;
 using namespace std;
 
+//vector utility functions
 vector<string>& split(const string &s, char delim, vector<string> &elems){  
     stringstream ss(s);
     string item;
@@ -25,6 +26,7 @@ vector<string> split(const string &s, char delim){
     return split(s, delim, elems);
 }
 
+//main starts here
 int main (int argc, char** argv){
     ///The file to read from.
     vector<string>* infiles = new vector<string>;

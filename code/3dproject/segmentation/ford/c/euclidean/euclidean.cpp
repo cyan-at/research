@@ -13,10 +13,25 @@
 #include <fstream>
 #include <string>
 #include <getopt.h>
+#include <vector>
 #include "/mnt/neocortex/scratch/jumpbot/research/code/3dproject/segmentation/ford/c/PointFord.h"
 
 using namespace pcl;
 using namespace std;
+
+vector<string>& split(const string &s, char delim, vector<string> &elems){  
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)){
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+vector<string> split(const string &s, char delim){
+    vector<string> elems;
+    return split(s, delim, elems);
+}
 
 int main (int argc, char** argv)
 {

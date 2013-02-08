@@ -9,6 +9,13 @@
 #include <pcl/kdtree/impl/kdtree_flann.hpp>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/segmentation/impl/extract_clusters.hpp>
+//for ransac
+#include <pcl/sample_consensus/ransac.h>
+#include <pcl/sample_consensus/impl/ransac.hpp>
+#include <pcl/sample_consensus/sac_model_plane.h>
+#include <pcl/sample_consensus/impl/sac_model_plane.hpp>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/filters/impl/extract_indices.hpp>
 
 struct PointFord{
    PCL_ADD_POINT4D;
