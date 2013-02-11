@@ -14,8 +14,12 @@
 #include <pcl/sample_consensus/impl/ransac.hpp>
 #include <pcl/sample_consensus/sac_model_plane.h>
 #include <pcl/sample_consensus/impl/sac_model_plane.hpp>
+#include <pcl/filters/filter.h>
+#include <pcl/filters/impl/filter.hpp>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/filters/impl/extract_indices.hpp>
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/impl/passthrough.hpp>
 
 struct PointFord{
    PCL_ADD_POINT4D;

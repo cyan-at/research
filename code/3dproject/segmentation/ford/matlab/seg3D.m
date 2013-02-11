@@ -28,11 +28,16 @@ for i = 1:q
     removeOutliersCmd = sprintf(removeOutliersPrefix, scanPCD, cleanedPath);
     system(removeOutliersCmd);
     
-    %remove ground
+    %remove ground using naive
     disp('removing ground');
     nogroundPath = strcat(scanFolderRoot,scanFolder,'/withoutground.pcd');
     removeGroundFromPCD(cleanedPath,nogroundPath,threshold);
 
+    %remove ground using RANSAC
+    disp('removing ground using RANSAC');
+    nogroundPath = strcat(scanFolderRoot,scanFolder,'/withoutground.pcd');
+    
+    
     %get clusters using euclidean
     disp('getting clusters');
     clusterDir = strcat(scanFolderRoot,scanFolder,'/clusters/'); 

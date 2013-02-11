@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <vector>
 #include <pcl/console/parse.h>
+#include <pcl/filters/filter.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
@@ -11,6 +12,7 @@
 #include <pcl/sample_consensus/sac_model_plane.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <boost/thread/thread.hpp>
+#include <pcl/filters/passthrough.h>
 #include "/mnt/neocortex/scratch/jumpbot/research/code/3dproject/segmentation/ford/c/PointFord.h"
 
 using namespace pcl;
@@ -27,29 +29,50 @@ int main (int argc, char** argv){
 	char* infile_c = argv[1];
 	char* outfile_c = argv[2];
 	string infile = string(infile_c);
+	char* threshold_c = argv[3];
+	float threshold = atof(threshold_c);
+	char* passthrough_c = argv[4];
+	float passthrough = atof(passthrough_c);
+	char* passthrough2_c = argv[5];
+	float passthrough2 = atof(passthrough2_c);
 
 	//read the input file into a cloud of pointfords
 	PCDReader reader;
  	PCDWriter writer;
- 	PointCloud<PointFord>::Ptr cloud (new PointCloud<PointFord>), final (new PointCloud<PointFord>);
+ 	PointCloud<PointFord>::Ptr cloud (new PointCloud<PointFord>);
+	PointCloud<PointFord>::Ptr passed (new PointCloud<PointFord>);
+	PointCloud<PointFord>::Ptr ground (new PointCloud<PointFord>);
+	PointCloud<PointFord>::Ptr notground (new PointCloud<PointFord>);
   	reader.read (infile, *cloud);
-	cout << "Made cloud, now doing ransac" << endl;
 
+	//passthrough filter to get points, -3.5 to -2.2
+	cout << "pass through" << endl;
+	PassThrough<PointFord> pass;  	pass.setInputCloud (cloud);  	pass.setFilterFieldName ("z");  	pass.setFilterLimits (passthrough,passthrough2);  	pass.setFilterLimitsNegative(true);  	pass.filter (*passed);
+
+	cout << "Made cloud, now doing ransac" << endl;
 	//ransac portion of code
-	vector<int> inliers;
-	SampleConsensusModelPlane<PointFord>::Ptr groundmodel (new SampleConsensusModelPlane<PointFord> (cloud));
+	vector<int> inliers, outliers;
+	PointIndices::Ptr inliersptr (new PointIndices());
+	SampleConsensusModelPlane<PointFord>::Ptr groundmodel (new SampleConsensusModelPlane<PointFord> (passed));
 	RandomSampleConsensus<PointFord> ransac (groundmodel);
-	ransac.setDistanceThreshold(0.01);
+	ransac.setDistanceThreshold(threshold);
 	cout << "Computing model" << endl;
 	ransac.computeModel();
 	cout << "Getting inliers" << endl;
 	ransac.getInliers(inliers);
+	inliersptr->indices = inliers;
+	int inliercount = inliers.size();
+	cout << "Inliers found: " << inliercount << endl;
 
-	cout << "Writing to output cloud" << endl;
-	//copy inliers to final cloud
-	copyPointCloud<PointFord>(*cloud,inliers,*final);
+	cout << "Getting outliers" << endl;
+	ExtractIndices<PointFord> extract;
+	extract.setInputCloud(passed);
+	extract.setIndices(inliersptr);    extract.setNegative(false);    extract.filter(*ground);
+	extract.setNegative(true);
+	extract.filter(*notground);
+	cout << "Writing to not ground cloud" << endl;
 	//write the final cloud to a file for visualization and processing	
-	writer.write<PointFord> ((const char*)outfile_c, *final, false);
+	writer.write<PointFord> ((const char*)outfile_c, *passed, false);
 
 	return 0;
 }
