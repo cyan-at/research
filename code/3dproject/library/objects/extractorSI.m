@@ -53,18 +53,16 @@ classdef extractorSI < handle
             srcfolder = dir(srcPath);
             for i = 1:length(srcfolder)
                 matName = srcfolder(i).name;
-
                 if ~strcmp(matName, '.') && ~strcmp(matName, '..')
-                    clear obj;
                     load(fullfile(srcPath,matName));
                     if exist('nonlap_neg_obj','var')
-                       obj = nonlap_neg_obj; 
+                       obj = nonlap_neg_obj;
                     end
                     if exist('pc', 'var')
                         obj = struct;
                         obj.pointcloud = pc;
                     end
-                    self.featureSize = cal_spinImages_feat(matName, savePath,obj,self.radius,self.imgW,self.minN);                
+                    self.featureSize = cal_spinImages_feat(matName,savePath,obj,self.radius,self.imgW,self.minN);  
                 end            
             end 
             

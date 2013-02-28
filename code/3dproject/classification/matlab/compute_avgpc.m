@@ -18,7 +18,7 @@ function [recall precision] = compute_rcpc(label,score,thresh)
 fprintf('thresh is %g\n',thresh);
 pred = 2*ones(size(score));
 pred(score>=thresh) = 1;
-not_idx = find(label == 2);
-idx = find(label == 1);
+not_idx = find(label == 1);
+idx = find(label == 2);
 recall = sum(label(idx) == pred(idx))/length(idx);
 precision = sum(label(idx) == pred(idx))/(sum(label(idx) == pred(idx))+sum(label(not_idx) ~= pred(not_idx)));

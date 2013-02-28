@@ -8,13 +8,12 @@ function [ feat, label ] = featsAndLabels(encoder, featurePath, pars)
 % indicate if the image of its index is a car or not.
 
 parameters = loadParameters(featurePath);
-frames = catalogue(featurePath, parameters);
+frames = catalogue(featurePath, 'mat','','featureMatrix.mat');
 numImages = length(frames);
 
 feat = zeros(encoder.numHidden * (sum(pars.pyramid .^ 2)), numImages);
 label = ones(1, numImages)*parameters.class;
 i = 1;
-
 while i <= numImages
     tS = tic;
     % Print dots to indicate progress.
@@ -25,6 +24,7 @@ while i <= numImages
     else
         fprintf('.');
     end
+    
     feat_batch = cell(12, 1);
     j = 1;
     while (j <= 12) && (i <= numImages)

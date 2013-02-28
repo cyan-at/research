@@ -10,6 +10,7 @@ function classificationPipeline(stacksArray, svm, pars)
         extractor = stacksArray(i).extractor;
         extractor.extractAll; %extract features
     end
+    matlabpool close;
     for i = 1:size(stacksArray,2)
         extractor = stacksArray(i).extractor;
         encoder = stacksArray(i).encoder;
@@ -17,16 +18,16 @@ function classificationPipeline(stacksArray, svm, pars)
             load(encoder.savepath);
         catch
             disp('==================================================');
-            fprintf('Training %s features', extractor.type);
+            fprintf('Training %s features\n', extractor.type);
             disp('==================================================');
             for j = 1:length(extractor.pathStructArray)
                 %in each of the feature paths we look for the parameters for
                 %information
                 srcPath = extractor.pathStructArray(j).savePath;
                 srcPath = strcat(srcPath, '/');
-                parameters = loadParameters(srcPath);
                 %check if that is a 'train' features
-                if (strcmp(parameters.mode,'train'))
+                if (~isempty(findstr(srcPath,'train')))
+                    disp('training!');
                     %collecting features into a big file
                     imagesPerClass = 80;
                     batchSize = 100;
@@ -42,6 +43,7 @@ function classificationPipeline(stacksArray, svm, pars)
         %after training the encoder, compute activations and pair with labels
         for j = 1:length(extractor.pathStructArray)
             srcPath = extractor.pathStructArray(j).savePath;
+            disp(srcPath);
             srcPath = strcat(srcPath, '/');
             parameters = loadParameters(srcPath);
             [features, labels] = featsAndLabels(encoder, srcPath, pars);
@@ -56,9 +58,6 @@ function classificationPipeline(stacksArray, svm, pars)
             end            
         end
     end
-    matlabpool close; %close the multiple cores
-    %or do fancy multimodal stuff here
-    %Run SVM
     [acc, acc_cv, ~, pred_test, model, ~, raw_score_test] = svm.train(trainFeatures, trainLabels', testFeatures, testLabels');
     svmSaveName = sprintf('%s/svm.mat', svm.savePath);
     modelSaveName = sprintf('%s/model.mat', svm.savePath);
@@ -66,6 +65,7 @@ function classificationPipeline(stacksArray, svm, pars)
     save(modelSaveName, 'model');
     %compute average precision
     testLabels = testLabels';
+    
     [rec, prec, ap] = compute_avgpc(testLabels,raw_score_test);
     % plot the recall-precision curve
     plotSvmResults(svm, prec, rec, ap);
@@ -89,6 +89,5 @@ function classificationPipeline(stacksArray, svm, pars)
     [maxf1, thresh_idx] = max(f);
     fprintf(fileID,'best thresh = %g (f1=%g) with recall = %g, precision = %g\n',raw_score_test(thresh_idx),maxf1,rec(thresh_idx),prec(thresh_idx));
     fclose(fileID);
-    
     disp('Done!');
 end

@@ -9,10 +9,12 @@ clear obj; load(clustermat);
 pixelxy = obj.pc(:,8:9);
 cam = mode(obj.pc(:,10));
 scan = mode(obj.pc(:,11));
+
 lowx = min(pixelxy(:,1));
 highx = max(pixelxy(:,1));
 lowy = min(pixelxy(:,2));
 highy = max(pixelxy(:,2));
+
 bndbox = [lowy,lowx,highy,highx];
 end
 

@@ -18,8 +18,7 @@ function [ featureMatrix ] = collectFeatures(featurePath, imagesPerClass, batchS
     end
     
     if (execute)
-        parameters = loadParameters(featurePath);
-        f = catalogue(featurePath, parameters);
+        f = catalogue(featurePath, 'mat');
         %set up the featureMatrix dimensions
         fpath = f(1);
         load(cell2mat(fpath), 'feat');

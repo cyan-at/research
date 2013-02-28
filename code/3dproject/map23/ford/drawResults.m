@@ -58,7 +58,7 @@ end
 
 bboxes = num2cell(bboxes,2);
 %finally show bboxes
-% showboxes_color(I_rotated, bboxes, 'b');
+showboxes_color(I_rotated, bboxes, 'b');
 
 %save to file
 % if (nargin > 2)
