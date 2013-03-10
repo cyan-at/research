@@ -42,75 +42,84 @@ for i = 1:length(cams)
     end
     
     %get cnn detections
-    [cidx,~] = find(cnn(:,5)==y);
-    cnns = cnn(cidx,:);
-    minX = min(cnns(:,1),cnns(:,3));
-    maxX = max(cnns(:,1),cnns(:,3));
-    minY = min(cnns(:,2),cnns(:,4));
-    maxY = max(cnns(:,2),cnns(:,4));
-    cnns(:,1:4) = [minX, minY, maxX, maxY];
+    if (exist(cnn,'var'))
+        [cidx,~] = find(cnn(:,5)==y);
+        cnns = cnn(cidx,:);
+        minX = min(cnns(:,1),cnns(:,3));
+        maxX = max(cnns(:,1),cnns(:,3));
+        minY = min(cnns(:,2),cnns(:,4));
+        maxY = max(cnns(:,2),cnns(:,4));
+        cnns(:,1:4) = [minX, minY, maxX, maxY];
+    end
 
     %look for nesting within cnns
-    groups = checkNesting(cnns);
+%     groups = checkNesting(cnns);
     %group is now a [bndbox cam combinedscore] n x 6 matrix
     %if we have detections to help here, we can use them
-    if (~isempty(mapped))
-        %create book keeping datastructure
-        action = zeros(size(groups,1),1);
-        replace = zeros(size(groups,1),1);
-        mapped = [min(mapped(:,1),mapped(:,3)),min(mapped(:,2),mapped(:,4)),max(mapped(:,1),mapped(:,3)),max(mapped(:,2),mapped(:,4)),mapped(:,5),mapped(:,6)];
-        %for every group, we check it against every detection
-        for g = 1:size(groups,1)
-            group = groups(g,:);
-            [o,p] = getOverlapDet(group,mapped,0.3);
-            action(g) = o;
-            replace(g) = p;
-            %o is the index of mapped that has overlap or isinside group
-            %if there is enough overlap or if one is inside the other, then we
-            %update action to be -1 (replace) and like to be that det
-        end
-        
-        %after everything, we go through the unique likes and update new
-        %first we eliminate all without underpinning cluster
-        [c,~] = find(action==-1);
-        groups(c,:) = [];
-        %after considering it, remove it
-        action(c,:) = [];
-        replace(c,:) = [];
-        
-        %then we go through all clusters that need replacement
-        [rep,~] = find(replace==1);
-        targets = action(rep,:);
-        groups(rep,:) = mapped(targets,:);
-        %after considering it, remove it
-        action(rep,:) = []; replace(rep,:) = [];
-        
-        %finally we go through all matrices that share clusters
-%         c = unique(action);
-%         for ic = length(c)
-%             [c2,~] = find(action==c(ic));
-%             temp = joinUp(groups,c2);
-%             groups(c2,:) = [];
-%             groups = [groups; temp];
-%             action(
+%     if (~isempty(mapped))
+%         %create book keeping datastructure
+%         action = zeros(size(groups,1),1);
+%         replace = zeros(size(groups,1),1);
+%         mapped = [min(mapped(:,1),mapped(:,3)),min(mapped(:,2),mapped(:,4)),max(mapped(:,1),mapped(:,3)),max(mapped(:,2),mapped(:,4)),mapped(:,5),mapped(:,6)];
+%         %for every group, we check it against every detection
+%         for g = 1:size(groups,1)
+%             group = groups(g,:);
+%             [o,p] = getOverlapDet(group,mapped,0.3);
+%             action(g) = o;
+%             replace(g) = p;
+%             %o is the index of mapped that has overlap or isinside group
+%             %if there is enough overlap or if one is inside the other, then we
+%             %update action to be -1 (replace) and like to be that det
 %         end
-    end    
-    new = groups;
+%         
+%         %after everything, we go through the unique likes and update new
+%         %first we eliminate all without underpinning cluster
+%         [c,~] = find(action==-1);
+%         groups(c,:) = [];
+%         %after considering it, remove it
+%         action(c,:) = [];
+%         replace(c,:) = [];
+%         
+%         %then we go through all clusters that need replacement
+%         [rep,~] = find(replace==1);
+%         targets = action(rep,:);
+%         groups(rep,:) = mapped(targets,:);
+%         %after considering it, remove it
+%         action(rep,:) = []; replace(rep,:) = [];
+%         
+%         %finally we go through all matrices that share clusters
+% %         c = unique(action);
+% %         for ic = length(c)
+% %             [c2,~] = find(action==c(ic));
+% %             temp = joinUp(groups,c2);
+% %             groups(c2,:) = [];
+% %             groups = [groups; temp];
+% %             action(
+% %         end
+%     end    
+%     new = groups;
 
     %for visualization
 %     newcolors = repmat('y',1,size(new,1));
 %     cnncolors = repmat('b',1,size(cnns,1));
 %     bndcolors = repmat('r',1,size(mapped,1));
 %     gtcolors = repmat('g',1,size(this,1));
-%     combined = [mapped(:,1:4);this;cnns(:,1:4)];
-%     final = num2cell(combined,2);
+
+    %just the bounding boxes
+    bndcolors = repmat('r',1,size(mapped,1));
+    combined = [mapped(:,1:4)];
+    final = num2cell(combined,2);
+    %temporary, load the undistorted (curved image)
+    showboxes_color(img,final,strcat(bndcolors));
+
+%     %production code
 %     showboxes_color(img,final,strcat(bndcolors,gtcolors,cnncolors));
 %     figure;
 %     final2 = num2cell([new(:,1:4)],2);
 %     showboxes_color(img,final2,strcat(newcolors));
 %     m = max(new(:,6));
 %     new(:,6) = new(:,6)./m;
-    newDetections = [newDetections; new];
+%     newDetections = [newDetections; new];
 end
 end
 
