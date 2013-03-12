@@ -1,35 +1,33 @@
-function [pred_bbox gt m acc] = evalDetection(detDir,root)
-%evaluates the detection results in detDir assuming a specific detection
-%structure with working directories at root
-addpath /mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/classification/
+function [rec,prec,ap] = evalDetection(detDir,root,threshold)
+d = dir(fullfile(detDir,'/*_res.txt'));
+addpath /mnt/neocortex/scratch/jumpbot/libdeepnets/trunk/3dcar_detection/detection/
+addpath /mnt/neocortex/scratch/jumpbot/libdeepnets/trunk/3dcar_detection/cnn/
+[id mapTo] = textread(fullfile(detDir,'map.txt'), '%d %s');
+frames = zeros(length(id),1);
 
-%get the map file
-fid = fopen(strcat(detDir,'map.txt'),'r');
-map = textscan(fid,'%d %s', 'Delimiter', ' ');
-idx = map{1}; scene = map{2};
-fclose(fid);
-
-fs = catalogue(root,'folder');
-for i = 1:length(fs)
-    workingPath = strcat(root,cell2mat(fs(i)),'/'); disp(workingPath);
-    %for every scene, get the cnn detections for this scene
-    cnnDetections = grabCNN(idx, scene, detDir, cell2mat(fs(i)));
-    %cnnDetections is a n x 6 matrix of [bndbox, cam, confidence]
+totalbboxesfound = 0;
+for j=length(d):-1:1
+    [filename score] = textread(fullfile(detDir,d(j).name),'%s %f');
+    framenum = sscanf(d(j).name,'data_batch_%d_res.txt');
+    bbox = [];
+    for i=1:length(filename)
+        bb = sscanf(filename{i},'%d_%d_%d_%d');
+        bb = bb';
+        bb = [bb score(i)];
+        bbox = [bbox; bb];
+    end
+    dashIdx = findstr(mapTo{framenum},'-');
+    target = sprintf('%s/%s/%s.mat',root,mapTo{framenum}(1:dashIdx-1),mapTo{framenum}(dashIdx+1:end));
+    load(target);
+    gt(j) = obj_to_gt(obj);
     
-    %apply non-maximal suppression on detections
-    idx=nms(cnnDetections,.5);
-    cnnDetections = cnnDetections(idx,:);
+    idx=nms(bbox,.5);  % apply nms
+    bbox = bbox(idx,:);
     
-    %et the ground truths and difficult or 
-    groundTruths = grabGroundTruths(workingPath);
-    %groundTruths will be n x 6 of cam bndbox difficult
-    
-    %evaluate cnn detections, generate a binary array of 1's and 0's and
-    %the corresponding scores
-    threshold = 0.5;
-    [score, target] = evaluate(cnnDetections,groundTruths,threshold);
-    [prec, tpr, fpr, thresh] = prec_rec(score, target,'plotPR',1);
-    
+    totalbboxesfound = totalbboxesfound + length(idx);
+    pred_bbox{j} = bbox;
 end
+fprintf('bounding boxes found: %d\n', totalbboxesfound);
 
-end
+[m ~] = compute_ap(pred_bbox,gt,threshold);
+ap = m.ap; rec = m.rc; prec = m.pc;

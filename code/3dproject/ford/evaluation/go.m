@@ -8,16 +8,19 @@ addpath /mnt/neocortex/scratch/jumpbot/libdeepnets/trunk/3dcar_detection/detecti
 addpath /mnt/neocortex/scratch/jumpbot/libdeepnets/trunk/3dcar_detection/cnn/
 root = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/test/';
 refine = struct(); original = struct();
-[pred_bbox gt refine.m refine.acc] = evalDetection(refineDir,root);
-[pred_bbox gt original.m original.acc] = evalDetection(originalDir,root);
+[refine.rec,refine.prec,refine.ap] = evalDetection(refineDir,root,0.5);
+[original.rec,original.prec,original.ap] = evalDetection(originalDir,root,0.5);
 %do plotting if needed
 doplot = true;
 if doplot
     %handle plotting!
     close all; figure; axis on; grid on; hold on;
-    plot(original.m.rc,original.m.pc,'b');
-    plot(refine.m.rc,refine.m.pc,'r');
-    legend('original','refine');
+    plot(original.rec,original.prec,'b');
+    plot(refine.rec,refine.prec,'r');
+    legend(...
+        strcat('original: ap = ', num2str(original.ap)), ...
+        strcat('refined: ap = ', num2str(refine.ap))...
+        );
     title('refined (just punish) vs. original');
     xlabel('recall'); ylabel('precision');
 end

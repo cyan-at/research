@@ -46,7 +46,7 @@ function [prec, tpr, fpr, thresh] = prec_rec(score, target, varargin)
 % prec_rec(x2, y2, 'holdFigure', 1);
 % legend('baseline','x1/y1','x2/y2','Location','SouthEast');
 
-% Copyright © 9/22/2010 Stefan Schroedl
+% Copyright ï¿½ 9/22/2010 Stefan Schroedl
 % Updated     3/16/2010
 
 optargin = size(varargin, 2);
@@ -175,7 +175,6 @@ thresh = [min(score) quantile(score,qvals)];
 thresh = sort(unique(thresh),2,'descend');
 total_target = sum(target);
 total_neg = sum(instance_count - target);
-
 prec = zeros(length(thresh),1);
 tpr  = zeros(length(thresh),1);
 fpr  = zeros(length(thresh),1);
@@ -205,7 +204,7 @@ if (plot_pr || plot_roc)
             
             hold on
             hold all
-            
+            grid on; axis on;
             plot([0; tpr], [1 ; prec], style); % add pseudo point to complete curve
             
             xlabel('recall');

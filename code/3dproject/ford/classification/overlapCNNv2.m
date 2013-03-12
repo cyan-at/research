@@ -40,31 +40,30 @@ for i = 2:length(cams)
     points(:,2) = round(points(:,2)/2);
     
 %% nesting section
-%     [~,nestings,scores] = checkNestingv2(cnns);
-%     %update the scores for cnns, the more nesting the better
-%     nested = find(nestings>0);
-%     %average out the scores for those that are inside of others
-%     scores(nested) = scores(nested) ./ nestings(nested);
-%     %improve the scores for those  nested inside of others
-%     %update with scores 
-%     cnns(:,6) = cnns(:,6) + scoresWeight*scores + nestingWeight * nestings;
-% %     nestedResult = cnns;
+    [~,nestings,scores] = checkNestingv2(cnns);
+    %update the scores for cnns, the more nesting the better
+    nested = find(nestings>0);
+    %average out the scores for those that are inside of others
+    scores(nested) = scores(nested) ./ nestings(nested);
+    %improve the scores for those  nested inside of others
+    %update with scores 
+    cnns(:,6) = cnns(:,6) + scoresWeight*scores + nestingWeight * nestings;
     
 %% no points section
-    %penalize those with not enough points inside
-    nopoints = [];
-    for j = 1:size(cnns,1)
-        %for every cnn detection, collect up all the 3d points inside of it
-        box = cnns(j,1:4);
-        [inside] = findPointsFor(box, points);
-        %if there no points, then add this box to those to penalize
-        if (isempty(inside))
-            nopoints = [nopoints, j];
-        end
-    end
-    %penalize the points scores by 1/2
-    cnns(nopoints,6) = cnns(nopoints,6)./2;
-    penalized = cnns;
+%     %penalize those with not enough points inside
+%     nopoints = [];
+%     for j = 1:size(cnns,1)
+%         %for every cnn detection, collect up all the 3d points inside of it
+%         box = cnns(j,1:4);
+%         [inside] = findPointsFor(box, points);
+%         %if there no points, then add this box to those to penalize
+%         if (isempty(inside))
+%             nopoints = [nopoints, j];
+%         end
+%     end
+%     %penalize the points scores by 1/2
+%     cnns(nopoints,6) = cnns(nopoints,6)./2;
+%     penalized = cnns;
     
 %% todo: for detections with points inside, 'squeeze' the detections to get a better fit
 
@@ -73,7 +72,7 @@ for i = 2:length(cams)
 %% todo: update with scores from proper/correct 2d segmentation results
     
 %% pack up response from this function
-newDetections = [newDetections; penalized];
+newDetections = [newDetections; cnns];
 
 %% visualization code section for debugging, comment out after debuggin
 %     nopointsCNN = cnns(nopoints,:);

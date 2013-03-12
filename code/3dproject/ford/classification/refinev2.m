@@ -9,7 +9,7 @@ testRoot = strcat(targetRoot,'test/');
 %load the param file
 paramFile = '/mnt/neocortex/scratch/jumpbot/data/3dproject/Ford/PARAM.mat'; load(paramFile);
 res_dir = '/mnt/neocortex/scratch/norrathe/data/car_patches/cnn_dataset_multiple_scales/ford/batch_redo_train_test/results_afternms_redo_train/';
-output_dir = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/refine3_11_13_just_punish/';
+output_dir = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/refine3_12_13_nesting/';
 ensure(output_dir);
 
 %get the map file
@@ -20,6 +20,7 @@ fclose(fid);
 
 root = testRoot;
 fs = catalogue(root,'folder');
+total = 0;
 for i = 1:length(fs)
     workingPath = strcat(root,cell2mat(fs(i))); disp(workingPath);
     %for every scene, get the cnn detections for this scene
@@ -27,6 +28,7 @@ for i = 1:length(fs)
     %cnnDetections is a n x 6 matrix of [bndbox, cam, confidence score]
     if (~isempty(cnnDetections))
         newDetections = overlapCNNv2(workingPath,cnnDetections,PARAM);
+        total = total + size(newDetections,1);
         %write the new detections into data_batch files
         c = strmatch(cell2mat(fs(i)),scene);
         y = idx(c);
@@ -45,6 +47,7 @@ for i = 1:length(fs)
         end
     end
 end
+fprintf('total detections found: %d\n',total);
 
 %copy over map file
 mfile = strcat(res_dir,'map.txt');
