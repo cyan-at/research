@@ -6,17 +6,21 @@ fid = fopen(pcdfile);
 tline = fgetl(fid);
 line = 0;
 points = 0;
+pointIndex = 1;
 while ischar(tline)
     line = line + 1;
+    %disp(line);
+    if (strcmp(tline(1:6),'POINTS'))
+        parts = strread(tline,'%s','delimiter',' ');
+        c = str2double(cell2mat(parts(2)));
+        pc = zeros(c,11);
+    end
     if (line > 11)
         points = points + 1;
-        %disp(tline);
         parts = strread(tline,'%s','delimiter',' ');
-        x = str2num(cell2mat(parts(1)));
-        y = str2num(cell2mat(parts(2)));
-        z = str2num(cell2mat(parts(3)));
-        point = [x; y; z];
-        pc = [pc,point];
+        point=cellfun(@str2double,parts)';
+        pc(pointIndex,:) = point;
+        pointIndex = pointIndex + 1;
     end
     tline = fgetl(fid);
 end
