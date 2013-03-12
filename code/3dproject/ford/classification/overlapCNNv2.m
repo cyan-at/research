@@ -1,12 +1,13 @@
-function [newDetections] = overlapCNNv2(workingPath,cnn,PARAM)
+function [newDetections,punished] = overlapCNNv2(workingPath,cnn,PARAM)
 %load the points in distorted 2D space
 allCords = getAllPoints(workingPath, 'z');
 %todo: switch this with getAllPointsv2
 newDetections = [];
 cams = catalogue(workingPath,'mat','cam');
-scoresWeight = 0.1; nestingWeight = 0.1;
+scoresWeight = 0.01; nestingWeight = 0.01;
 allidx = 1:size(cnn,1);
 considered = allidx*0;
+punished = 0;
 for i = 1:length(cams)
 %% overhead
     close all;
@@ -51,7 +52,7 @@ for i = 1:length(cams)
     %improve the scores for those  nested inside of others
     %update with scores 
     cnns(:,6) = cnns(:,6) + scoresWeight*scores + nestingWeight * nestings;
-    
+        
 %% no points section
     %penalize those with not enough points inside
     nopoints = [];
@@ -64,7 +65,8 @@ for i = 1:length(cams)
             nopoints = [nopoints, j];
         end
     end
-    %penalize the points scores by 1/2
+    %penalize the scores of those with no points inside
+    punished = punished + size(nopoints,1);
     cnns(nopoints,6) = 0; %cnns(nopoints,6)./2;
     
 %% todo: for detections with points inside, 'squeeze' the detections to get a better fit
