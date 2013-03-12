@@ -1,4 +1,4 @@
-function mat2pcdford(combined, saveName)
+function mat2pcdfordsource(combined, saveName)
 %converts the file to PCD format somewhat and saves it at saveName
 %combined row is [x y z rgb r g b x y cam scan]
 fid = fopen(saveName,'w');

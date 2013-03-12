@@ -6,40 +6,37 @@ cams = catalogue(objPath,'mat','cam');
 for i = 1:length(cams)
     close all;
     c = cell2mat(cams(i));
-    
-    %get the ground truth
-    this = [];
-    load(c);
-    for j = 1:length(obj)
-        this = [this;[obj(j).bndbox(1), obj(j).bndbox(2), obj(j).bndbox(3), obj(j).bndbox(4)]];
-    end
-    
+    disp(c);
+
     %get detections
     [~,y,~] = fileparts(c); y = strsplit(y,'cam'); y = str2num(cell2mat(y(2)));
-    z = 5-y+1;
-    switch z
+    disp(y); %temp
+    imgFile = strcat(objPath, '/cam',num2str(y),'.png');
+    disp(imgFile);
+    figure; imshow(imgFile);
+    switch y
         case 1
-            camindex = 2;
-        case 2
-            camindex = 1;
-        case 3
-            camindex = 0;
-        case 4
-            camindex = 4;
-        case 5
             camindex = 3;
+        case 2
+            camindex = 2;
+        case 3
+            camindex = 1;
+        case 4
+            camindex = 5;
+        case 5
+            camindex = 4;
     end
-    [idx,~] = find(results(:,6)==camindex+1);
+    [idx,~] = find(results(:,6)==camindex);
     r = results(idx,[2:6,9:10]);
-    [alert mapped] = mapResults2(r, PARAM(camindex+1));
-    if (~alert)
-        %fix up mapped
-        mapped(:,1:4) = mapped(:,1:4)/2;
-        %combine detection scores from ford and kitti
-        temp = mapped(:,1:5);
-        temp(:,6) = 0.5.*mapped(:,6) + 0.5.*mapped(:,7);
-        mapped = temp;
-    end
+    [alert mapped] = distortDetections(r, PARAM(camindex));
+%     if (~alert)
+%         %fix up mapped
+%         mapped(:,1:4) = mapped(:,1:4)/2;
+%         %combine detection scores from ford and kitti
+%         temp = mapped(:,1:5);
+%         temp(:,6) = 0.5.*mapped(:,6) + 0.5.*mapped(:,7);
+%         mapped = temp;
+%     end
     
     %get cnn detections
     if (exist(cnn,'var'))
@@ -109,7 +106,15 @@ for i = 1:length(cams)
     bndcolors = repmat('r',1,size(mapped,1));
     combined = [mapped(:,1:4)];
     final = num2cell(combined,2);
+    
     %temporary, load the undistorted (curved image)
+    imgFile = strcat(objPath,'/image',num2str(camindex-1),'.ppm');
+    disp(imgFile);
+    img = imread(imgFile);
+    img = imresize(img, [1232,1616]);
+    img = imrotate(img, -90);
+    img = flipdim(img,2);
+    figure;
     showboxes_color(img,final,strcat(bndcolors));
 
 %     %production code

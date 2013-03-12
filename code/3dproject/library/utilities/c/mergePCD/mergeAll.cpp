@@ -29,7 +29,6 @@ int main (int argc, char** argv){
     vector<string>* infiles = new vector<string>;
     string outfile;
     vector<string> v(argv, argv+argc);
-    //cout << v.size() << endl;
     for (int i = 1; i < v.size(); ++i){
         if (i < v.size()-2){
             //cout << "inputs: " << v.at(i) << endl;
@@ -45,6 +44,7 @@ int main (int argc, char** argv){
     PointCloud<PointXYZ>::Ptr target (new PointCloud<PointXYZ>);
     while (!infiles->empty()){
         PointCloud<PointXYZ>::Ptr temp (new PointCloud<PointXYZ>);
+		cout << infiles->back() << endl;
         reader.read(infiles->back(), *temp);
         *target += *temp;
         infiles->pop_back();

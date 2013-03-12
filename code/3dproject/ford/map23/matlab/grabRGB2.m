@@ -25,8 +25,6 @@ for i = 1:5
     pixels = K*SCAN.Cam(i).xyz;
     ycoord = round(pixels(1,:)./pixels(3,:));
     xcoord = round(pixels(2,:)./pixels(3,:));
-    pnew = [0,-1;1,0]*[0,-1;1,0]*[0, -1;1,0]*[xcoord;ycoord]; 
-    pnew(2,:) = pnew(2,:) + 1616*ones(1,size(pnew,2));
     %scatter(pnew(1,:)',pnew(2,:)',2);
     %p = [pnew(1,:)',pnew(2,:)'];
     p = round(SCAN.Cam(i).pixels)';

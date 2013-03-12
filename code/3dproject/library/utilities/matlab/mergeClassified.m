@@ -2,7 +2,6 @@ function mergeClassified(classifiedDir)
 mergePrefix = '/home/charlie/Desktop/research/code/3dproject/library/utilities/c/mergePCD/build/mergeAll';
 carpcds = strcat(classifiedDir, 'car_*.pcd');
 notpcds = strcat(classifiedDir, 'not_*.pcd');
-
 carspcdLoc = fullfile(classifiedDir, 'cars.pcd');
 arguments = '';
 carNames = dir(carpcds);

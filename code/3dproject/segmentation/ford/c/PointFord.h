@@ -31,6 +31,7 @@ struct PointFord{
    float pixely;
    float cam;
    float scan;
+   float source;
    EIGEN_MAKE_ALIGNED_OPERATOR_NEW   
 } EIGEN_ALIGN16;
 
@@ -46,4 +47,5 @@ POINT_CLOUD_REGISTER_POINT_STRUCT (PointFord,
 	(float, pixely, pixely)
 	(float, cam, cam)
 	(float, scan, scan)
+	(float, source, source)
 	)

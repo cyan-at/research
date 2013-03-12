@@ -26,7 +26,7 @@ totalClusters = 0;
 total = 0;
 found = 0;
 for i = 1:length(fs)
-    %disp(i);
+    disp(i);
     scanFolder = strcat(root,cell2mat(fs(i))); disp(scanFolder);
     pcdDir = strcat(scanFolder,'/classified/pcd/');
     %attempt to get the cnn detections for this scene
@@ -35,7 +35,7 @@ for i = 1:length(fs)
     
     results = collectDetectionResults(pcdDir);
     %get overlaps with ground truths
-    [newDetections] = overlapCNN(scanFolder,results,PARAM, cnnDetections);
+    [newDetections] = overlapCNNdev(scanFolder,results,PARAM,cnnDetections);
     %write the new detections into data_batch files
     c = strmatch(cell2mat(fs(i)),scene);
     y = idx(c);

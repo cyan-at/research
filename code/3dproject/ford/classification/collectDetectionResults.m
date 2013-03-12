@@ -1,4 +1,5 @@
 function [results] = collectDetectionResults( pcdDir )
+disp(pcdDir); %temp
 detectionFile = strcat(pcdDir,'detection.txt');
 fid = fopen(detectionFile,'r');
 tline = fgets(fid);
