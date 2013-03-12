@@ -1,5 +1,5 @@
 originalDir = '/mnt/neocortex/scratch/norrathe/data/car_patches/cnn_dataset_multiple_scales/ford/batch_redo_train_test/results_afternms_redo_train/';
-refineDir  = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/refine3_11_13_just_punish/';
+refineDir  = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/refine3_12_13_nesting_punish/';
 %add paths
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));

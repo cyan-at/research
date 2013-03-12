@@ -27,7 +27,7 @@ for j=length(d):-1:1
     totalbboxesfound = totalbboxesfound + length(idx);
     pred_bbox{j} = bbox;
 end
-fprintf('bounding boxes found: %d\n', totalbboxesfound);
+% fprintf('bounding boxes found: %d\n', totalbboxesfound);
 
 [m ~] = compute_ap(pred_bbox,gt,threshold);
 ap = m.ap; rec = m.rc; prec = m.pc;

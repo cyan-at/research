@@ -5,7 +5,9 @@ allCords = getAllPoints(workingPath, 'z');
 newDetections = [];
 cams = catalogue(workingPath,'mat','cam');
 scoresWeight = 0.1; nestingWeight = 0.1;
-for i = 2:length(cams)
+allidx = 1:size(cnn,1);
+considered = allidx*0;
+for i = 1:length(cams)
 %% overhead
     close all;
     c = cell2mat(cams(i));
@@ -27,6 +29,7 @@ for i = 2:length(cams)
     imgFile1 = strcat(workingPath, '/cam',num2str(y),'.png');
     img1 = imread(imgFile1);
     [cidx,~] = find(cnn(:,5)==y);
+    considered(cidx) = 1;
     cnns = cnn(cidx,:);
     minX = min(cnns(:,1),cnns(:,3));
     maxX = max(cnns(:,1),cnns(:,3));
@@ -50,20 +53,19 @@ for i = 2:length(cams)
     cnns(:,6) = cnns(:,6) + scoresWeight*scores + nestingWeight * nestings;
     
 %% no points section
-%     %penalize those with not enough points inside
-%     nopoints = [];
-%     for j = 1:size(cnns,1)
-%         %for every cnn detection, collect up all the 3d points inside of it
-%         box = cnns(j,1:4);
-%         [inside] = findPointsFor(box, points);
-%         %if there no points, then add this box to those to penalize
-%         if (isempty(inside))
-%             nopoints = [nopoints, j];
-%         end
-%     end
-%     %penalize the points scores by 1/2
-%     cnns(nopoints,6) = cnns(nopoints,6)./2;
-%     penalized = cnns;
+    %penalize those with not enough points inside
+    nopoints = [];
+    for j = 1:size(cnns,1)
+        %for every cnn detection, collect up all the 3d points inside of it
+        box = cnns(j,1:4);
+        [inside] = findPointsFor(box, points);
+        %if there no points, then add this box to those to penalize
+        if (isempty(inside))
+            nopoints = [nopoints, j];
+        end
+    end
+    %penalize the points scores by 1/2
+    cnns(nopoints,6) = 0; %cnns(nopoints,6)./2;
     
 %% todo: for detections with points inside, 'squeeze' the detections to get a better fit
 
@@ -72,7 +74,7 @@ for i = 2:length(cams)
 %% todo: update with scores from proper/correct 2d segmentation results
     
 %% pack up response from this function
-newDetections = [newDetections; cnns];
+    newDetections = [newDetections; cnns];
 
 %% visualization code section for debugging, comment out after debuggin
 %     nopointsCNN = cnns(nopoints,:);
@@ -95,6 +97,11 @@ newDetections = [newDetections; cnns];
 %     %show the 3d point clouds in distorted space
 %     hold on; scatter(points(:,1),points(:,2),2.5,'b');
 end
+
+%add the forgotten ones
+fidx = find(considered==0);
+forgotten = cnn(fidx,:);
+newDetections = [newDetections; forgotten];
 
 end
 

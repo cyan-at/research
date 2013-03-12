@@ -4,7 +4,7 @@ numGroundTruths = 0;
 for i=1:length(detections)
     numGroundTruths = size(gt(i).BB,1)+numGroundTruths;
 end
-fprintf('number of ground truths found: %d\n',numGroundTruths);
+% fprintf('number of ground truths found: %d\n',numGroundTruths);
 
 %accumulate the bounding boxes and their origins
 boundingboxes = [];
