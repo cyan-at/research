@@ -468,8 +468,7 @@ main (int argc, char ** argv)
   //pcl::PCDGrabber<pcl::PointXYZRGB> grabber(pcd_files,5.0,false);
   //PCL_INFO ("PCD Grabber created\n");
 
-  pcl::OpenNIGrabber grabber ("#1");
-  
+  pcl::OpenNIGrabber grabber("#1");
   OrganizedSegmentationDemo seg_demo (grabber);
   seg_demo.show();
   return (app.exec ());
