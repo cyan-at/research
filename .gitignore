@@ -17,6 +17,9 @@
 # Data
 data/
 
+# Ignore third party directories
+code/3dproject/ford/thirdparty/
+
 # Test
 test/
 
