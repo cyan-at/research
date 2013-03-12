@@ -450,8 +450,7 @@ OrganizedSegmentationDemo::displayNormalsPressed ()
   display_normals_ = !display_normals_;
 }
 
-int
-main (int argc, char ** argv)
+int main (int argc, char ** argv)
 {
   QApplication app(argc, argv);
   
@@ -471,5 +470,5 @@ main (int argc, char ** argv)
   pcl::OpenNIGrabber grabber("#1");
   OrganizedSegmentationDemo seg_demo (grabber);
   seg_demo.show();
-  return (app.exec ());
+  return (app.exec());
 }
