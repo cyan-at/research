@@ -1,7 +1,0 @@
-pyramid:[1 2]
-numHidden:1024
-ps:16
-gs:2
-imgW:16
-minN:10
-radius:1
