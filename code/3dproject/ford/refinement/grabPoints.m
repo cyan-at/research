@@ -1,4 +1,4 @@
-function grabPoints(points)
+function = grabPoints(points)
 %using this function in overlapCNNv2, mainly for visualizing / debuggin
 %when you have a cnn detection, grabPoints(points found inside of cnn)
 %later, get the mode of the cluster id of these points, and modify cnn

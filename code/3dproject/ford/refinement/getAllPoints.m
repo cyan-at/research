@@ -44,5 +44,5 @@ for camindex = 0:4
     coord = [repmat(camindex+1,size(coord,1),1),coord];
     allCords = [allCords; coord];
 end
-%allCords has row: [u,v,distancegroup,actualrange,z,horz]
+%allCords has row: [cam,u,v,distancegroup,actualrange,z,horz]
 end

@@ -1,0 +1,4 @@
+%go through every scene, and for each scene, generate a directory of positive and negative pointclouds based on cvpr segmentation and ground truths
+researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
+addpath(genpath(strcat(researchPath,'/library/')));
+targetRoot = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/';

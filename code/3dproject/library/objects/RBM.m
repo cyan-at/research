@@ -11,7 +11,6 @@ classdef RBM < handle
 		learningRate = 0.1;
         
 		k = 1;
- 
         %according to practical guide we should initialize
         %the weights with mean 0 and variance 0.01
 		sigma = 0.01;

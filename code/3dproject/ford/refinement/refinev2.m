@@ -1,4 +1,4 @@
-%go through every scene, and for each scene grab the labl bnding boxes
+%go through every scene, and for each scene grab the label bnding boxes
 %grab the detection results from every scene and for every cam in hand
 %labels, get the corresponding detection bndboxes
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
