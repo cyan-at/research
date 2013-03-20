@@ -1,4 +1,4 @@
-function labels = getcvprLabels(points,cvprFile,img1);
+function labels = getcvprLabels(points,cvprFile);
 clear cvpr; load(cvprFile);
 %allCords row: [u,v,distancegroup,actualrange,z,horz]
 labels = zeros(size(points,1),1);

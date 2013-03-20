@@ -7,11 +7,11 @@ frames = zeros(length(id),1);
 
 totalbboxesfound = 0;
 for j=length(d):-1:1
-    [filename score] = textread(fullfile(detDir,d(j).name),'%s %f');
+    [detections score t] = textread(fullfile(detDir,d(j).name),'%s %f %f');
     framenum = sscanf(d(j).name,'data_batch_%d_res.txt');
     bbox = [];
-    for i=1:length(filename)
-        bb = sscanf(filename{i},'%d_%d_%d_%d');
+    for i=1:length(detections)
+        bb = sscanf(detections{i},'%d_%d_%d_%d');
         bb = bb';
         bb = [bb score(i)];
         bbox = [bbox; bb];

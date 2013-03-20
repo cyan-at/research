@@ -62,6 +62,10 @@ classdef extractorSI < handle
                         obj = struct;
                         obj.pointcloud = pc;
                     end
+                    if exist('pointcloud','var')
+                        obj = struct;
+                        obj.pointcloud = pointcloud';
+                    end
                     self.featureSize = cal_spinImages_feat(matName,savePath,obj,self.radius,self.imgW,self.minN);  
                 end            
             end 

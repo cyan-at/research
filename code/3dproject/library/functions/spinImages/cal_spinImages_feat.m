@@ -9,6 +9,9 @@ for i=1:length(obj)
         continue;
     end
 
+    if (isempty(obj(i).pointcloud))
+        continue;
+    end
     try
         load(feapath)
     catch

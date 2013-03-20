@@ -8,8 +8,8 @@ trainRoot = strcat(targetRoot,'train/');
 testRoot = strcat(targetRoot,'test/');
 %load the param file
 paramFile = '/mnt/neocortex/scratch/jumpbot/data/3dproject/Ford/PARAM.mat'; load(paramFile);
-res_dir = '/mnt/neocortex/scratch/norrathe/data/car_patches/cnn_dataset_multiple_scales/ford/batch_redo_train_test/results_afternms_redo_train/';
-output_dir = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/refine3_12_13_dev/';
+res_dir = '/mnt/neocortex/scratch/norrathe/data/car_patches/cnn_dataset_multiple_scales/ford/batch_redo_train/results_afternms_redo_train_ver2/';
+output_dir = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/refine3_20_13_dev/';
 ensure(output_dir);
 
 %get the map file
@@ -23,7 +23,7 @@ fs = catalogue(root,'folder');
 total = 0;
 totalpunished = 0;
 nesting = true; punish = true; coverage = true;
-for i = 1:2%length(fs)
+for i = 1:length(fs)
     workingPath = strcat(root,cell2mat(fs(i))); disp(workingPath);
     %for every scene, get the cnn detections for this scene
     cnnDetections = grabCNN(idx, scene, res_dir, cell2mat(fs(i)));
