@@ -6,9 +6,9 @@ addpath(genpath(strcat(researchPath,'/library/')));
 close all;
 trainLabels = [];   trainFeatures = [];
 testLabels = [];    testFeatures = [];
-% matlabpool open 4; %run this line to open up multiple cores
+matlabpool open 4; %run this line to open up multiple cores
 %run through each stack and extract and encode
-for i = 1:size(stacksArray,2)
+parfor i = 1:size(stacksArray,2)
     %run through each stack of extractors, encoders
     extractor = stacksArray(i).extractor;
     extractor.extractAll; %extract features
@@ -59,7 +59,7 @@ for i = 1:size(stacksArray,2)
         end
     end
 end
-% matlabpool close; %close the multiple cores
+matlabpool close; %close the multiple cores
 %Run SVM
 [acc, acc_cv, ~, pred_test, model, ~, raw_score_test] = svm.train(trainFeatures, trainLabels', testFeatures, testLabels');
 svmSaveName = sprintf('%s/svm.mat', svm.savePath);

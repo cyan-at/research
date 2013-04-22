@@ -1,7 +1,7 @@
 %imports
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));
-rootSrcPath = 	'/mnt/neocortex/scratch/data/3dproject/fixed_new_3D/';
+rootSrcPath = 	'/mnt/neocortex/scratch/jumpbot/data/3dproject/fixed_new_3D';
 rootSavePath =  '/mnt/neocortex/scratch/jumpbot/data/3dproject/4_22_13';
 ensure(rootSavePath);
 rootFeaturePath = sprintf('%s/features',rootSavePath);

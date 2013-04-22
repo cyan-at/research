@@ -50,14 +50,12 @@ classdef extractor_new3D < handle
         function extract(self, srcPath, savePath, class, mode)
             %we expect the mat files to contain some 'obj' objects that holds the point clouds
             % Extract features from each single image.
-            srcfolder = dir(srcPath);
-            for i = 1:length(srcfolder)
-                matName = srcfolder(i).name;
-                if ~strcmp(matName, '.') && ~strcmp(matName, '..')
-                    load(fullfile(srcPath,matName));
-                    self.featureSize = calcSI(matName,savePath,obj,self.radius,self.imgW,self.minN);  
-                end            
-            end 
+            matfiles = catalogue(srcPath,'mat','','featureMatrix.mat');
+            for i = 1:length(matfiles)
+                matName = cell2mat(matfiles(i));
+                load(matName);
+                self.featureSize = calcSI(matName,savePath,obj,self.radius,self.imgW,self.minN);
+            end
             
             % Save parameters for future reference.
             params = sprintf('%s/parameters.txt', savePath);

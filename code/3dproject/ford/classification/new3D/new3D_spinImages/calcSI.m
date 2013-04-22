@@ -1,5 +1,5 @@
 function featureSize = calcSI(matName, savepath,obj,radius,imgW,minN)
-%expects it in 3 X N
+%obj has n x 3
 [~, matName, ~] = fileparts(matName);
 fprintf('Processing spinImages: %s.mat (%d objs)\n',matName, length(obj));
 featureSize = size(zeros(imgW*imgW, 1));
@@ -15,8 +15,8 @@ for i=1:length(obj)
     try
         load(feapath)
     catch
-        feaArr = compSI(obj(i).pointcloud', radius, imgW, minN); 
-        feaArr = reshape(feaArr,imgW*imgW,size(obj(i).pointcloud,2));
+        feaArr = compSI(obj(i).pointcloud, radius, imgW, minN); 
+        feaArr = reshape(feaArr,imgW*imgW,size(obj(i).pointcloud,1));
         feat.feaArr = single(feaArr);
         feat.width = size(feaArr,2);
         feat.height = size(feaArr,2);
