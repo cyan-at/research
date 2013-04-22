@@ -1,0 +1,7 @@
+pyramid:[1 2 4]
+numHidden:2048
+ps:16
+gs:2
+imgW:16
+minN:10
+radius:2
