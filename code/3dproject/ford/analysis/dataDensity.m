@@ -32,6 +32,6 @@ function [ dmap ] = dataDensity( x, y, width, height, limits, fudge )
         end
     end
             
-
+    dmap = flipud(dmap);
 end
 

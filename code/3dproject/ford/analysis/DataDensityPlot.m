@@ -17,6 +17,5 @@ function [ f ] = DataDensityPlot( x, y, levels )
     set(gca, 'XTickLabel', [min(x) max(x)]);
     set(gca, 'YTick', [1 256]);
     set(gca, 'YTickLabel', [min(y) max(y)]);
-    uiwait;
 end
 
