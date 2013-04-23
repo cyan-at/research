@@ -1,4 +1,4 @@
-function new3D_pipeline(stacksArray, svm, pars, msg, images_per_class)
+function new3D_pipeline_plus(stacksArray, svm, pars, msg, images_per_class)
 %imports
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));
@@ -48,7 +48,7 @@ for i = 1:size(stacksArray,2)
         srcPath = extractor.pathStructArray(j).savePath;
         srcPath = strcat(srcPath, '/');
         parameters = loadParameters(srcPath);
-        [features, labels] = new3D_featsAndLabels(encoder, srcPath, pars);
+        [features, labels] = new3D_featsAndLabels_plus(encoder, srcPath, pars);
         %naive concatenating, but you can add your fancy multimodal
         %stuff here
         if (strcmp(parameters.mode, 'train'))

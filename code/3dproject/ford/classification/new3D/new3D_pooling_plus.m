@@ -1,4 +1,4 @@
-function [ pool ] = new3D_pooling(feaSet, encoder, parameters)
+function [ pool ] = new3D_pooling_plus(feaSet, encoder, parameters)
 %spatial pooling function, max pooling
 
     feaSet.feaArr = double(feaSet.feaArr);
@@ -50,5 +50,16 @@ function [ pool ] = new3D_pooling(feaSet, encoder, parameters)
     
     pool = pool(:);
     pool = pool./sqrt(sum(pool.^2));
+    
+    %add the metadata
+    meta = feaSet.meta;
+    %get the cam
+    cam = mode(meta(:,10));
+    %maxrange
+    maxrange = max(meta(:,3));
+    minrange = min(meta(:,3));
+    meanrange = mean(meta(:,3));
+    
+    pool = [pool;maxrange;minrange;meanrange;cam];
 end
 

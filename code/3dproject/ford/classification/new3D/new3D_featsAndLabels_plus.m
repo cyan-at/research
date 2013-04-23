@@ -1,4 +1,4 @@
-function [ feat, label ] = new3D_featsAndLabels(encoder, featurePath, pars)
+function [ feat, label ] = new3D_featsAndLabels_plus(encoder, featurePath, pars)
 % Calculate the activations and add labels. featurePath should
 % be the root path that contains feature files.
             
@@ -11,7 +11,7 @@ parameters = loadParameters(featurePath);
 frames = catalogue(featurePath, 'mat', '', 'featureMatrix.mat');
 numImages = length(frames);
 
-feat = zeros(encoder.numHidden * (sum(pars.pyramid .^ 2)), numImages);
+feat = zeros(encoder.numHidden * (sum(pars.pyramid .^ 2))+4, numImages);
 label = ones(1, numImages)*parameters.class;
 i = 1;
 
@@ -36,7 +36,7 @@ while i <= numImages
     batch_size = sum(~cellfun(@isempty, feat_batch));
     feat_sub = zeros(size(feat, 1), batch_size);
     for k = 1 : batch_size
-        feat_sub(:, k) = new3D_pooling(feat_batch{k}.feat, encoder, pars);
+        feat_sub(:, k) = new3D_pooling_plus(feat_batch{k}.feat, encoder, pars);
     end
     feat(:, i - j + 1 : i - 1) = feat_sub;
 end

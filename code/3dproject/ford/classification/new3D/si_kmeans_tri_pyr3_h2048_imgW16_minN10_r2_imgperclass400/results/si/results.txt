@@ -1,0 +1,9 @@
+True Negative Accuracy: 0.54
+True Positive Accuracy: 0.83
+Acc: 67.63
+Acc CV: 75.70
+**********************************************************
+
+/n/n***Reporting best threshold and average precision***
+average precision = 0.770484
+best thresh = 0.0173125 (f1=0.734799) with recall = 0.956229, precision = 0.596639

@@ -1,4 +1,4 @@
-function [ featureMatrix ] = collectFeatures(featurePath, imagesPerClass, batchSize, reuse)
+function [ featureMatrix ] = new3D_collectFeatures(featurePath, imagesPerClass, batchSize, reuse)
     %featurePath is the of mat that holds features
     %imagesPerclass is how many mat files we want to use
     %batchSize is within a given mat file
