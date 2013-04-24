@@ -2,20 +2,35 @@
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));
 
-%load my data
-numSamples = 1000;
+%parameters
+numSamples = 80;
 suffix = sprintf('_%d',numSamples);
-neg_target = sprintf('%s/neg_scores%s.mat',pwd, suffix);
-pos_target = sprintf('%s/pos_scores%s.mat',pwd, suffix);
+source = 'si_kmeans_tri_pyr3_h2048_imgW16_minN10_r2_imgperclass80_plus';
+posWeight = 1;
+negWeight = 2;
+neg_target = sprintf('%s/%s/neg_scores%s.mat',pwd, source, suffix);
+pos_target = sprintf('%s/%s/pos_scores%s.mat',pwd, source, suffix);
+suffix = sprintf('_%d_pos%d_neg%d',numSamples,posWeight,negWeight);
+heatmap = sprintf('%s/%s.png',pwd,source);
+model_location = sprintf('%s/%s/model%s.mat',pwd,source,suffix);
+
+%load my data
 load(neg_target);
 load(pos_target);
-x1 = pos_scores.matrix(3,:);
-y1 = pos_scores.matrix(2,:);
+cnn = 1;
+two = 2;
+three = 3;
+xfeature = 'CNN';
+yfeature = '3D';
+xfeat = cnn;
+yfeat = three;
+x1 = pos_scores.matrix(xfeat,:);
+y1 = pos_scores.matrix(yfeat,:);
 labels1 = ones(1,size(x1,2));
 c = repeat_char('b',size(x1,2));
 
-x2 = neg_scores.matrix(3,:);
-y2 = neg_scores.matrix(2,:);
+x2 = neg_scores.matrix(xfeat,:);
+y2 = neg_scores.matrix(yfeat,:);
 labels2 = zeros(1,size(x2,2));
 c2 = repeat_char('r',size(x2,2));
 
@@ -29,25 +44,61 @@ x=x-mean(x(:));
 x=x/std(x(:));
 y=y-mean(y(:));
 y=y/std(y(:));
+X = [x',y'];
+y = labels';
+close all;
+% figure,
+% plotData(X, y);
+xlabel(xfeature);
+ylabel(yfeature);
+% Initialize settings for grid search
+stepSize = 1;
+log2cList = -1:stepSize:10;
+log2gList = -10:stepSize:1;
+Nlog2c = length(log2cList);
+Nlog2g = length(log2gList);
+heat = zeros(Nlog2c,Nlog2g); % Init heatmap matrix
+bestAccuracy = 0; % Var to store best accuracy
+% To see how things go as grid search runs
+totalRuns = Nlog2c*Nlog2g;
 
-d = [x',y'];
-model = svmtrain(labels', d, '-t 2');
+% Grid search to optimize cost & gamma
+runCounter = 1;
+for i = 1:Nlog2c
+    for j = 1:Nlog2g
+        log2c = log2cList(i);
+        log2g = log2gList(j);
+        disp([num2str(runCounter), '/', num2str(totalRuns)]);
+        disp(['Trying c=', num2str(2^log2c), ' and g=', num2str(2^log2g)]);
+        % Train with current cost & gamma
+        params = ['-t 2 -v 10 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g)];
+        accuracy = svmtrain(y, X, params);
+        % Update heatmap matrix
+        heat(i,j) = accuracy;
+        % Update accuracy, cost & gamma if better
+        if (accuracy >= bestAccuracy)
+            bestAccuracy = accuracy;
+            bestC = 2^log2c;
+            bestG = 2^log2g;
+        end
+        runCounter = runCounter+1;
+    end
+end
+hm = figure;
+imagesc(heat);
+colormap('jet'); 
+colorbar;
+set(gca,'XTick',1:Nlog2g);
+set(gca,'XTickLabel',sprintf('%3.1f|',log2gList));
+xlabel('Log_2\gamma');
+set(gca,'YTick',1:Nlog2c);
+set(gca,'YTickLabel',sprintf('%3.1f|',log2cList));
+ylabel('Log_2c');
+title('Grid Search over c and \gamma for RBF kernel');
+saveas(hm, heatmap);
 
-% now plot support vectors
-hold on;
-sv = full(model.SVs);
-plot(sv(:,1),sv(:,2),'ko');
-% now plot decision area
-[xi,yi] = meshgrid([min(d(:,1)):0.1:max(d(:,1))],[min(d(:,2)):0.1:max(d(:,2))]);
-dd = [xi(:),yi(:)];
-tic;[predicted_label, accuracy, decision_values] = svmpredict(zeros(size(dd,1),1), dd, model);toc
-pos = find(predicted_label==1);
-hold on;
-redcolor = [1 0.8 0.8];
-bluecolor = [1 1 1];
-h1 = plot(dd(pos,1),dd(pos,2),'s','color',redcolor,'MarkerSize',10,'MarkerEdgeColor',redcolor,'MarkerFaceColor',redcolor);
-pos = find(predicted_label==-1);
-hold on;
-h2 = plot(dd(pos,1),dd(pos,2),'s','color',bluecolor,'MarkerSize',10,'MarkerEdgeColor',bluecolor,'MarkerFaceColor',bluecolor);
-uistack(h1, 'bottom');
-uistack(h2, 'bottom');
+params = ['-t 2 -c ', num2str(bestC), ' -g ', num2str(bestG), ' -w1', num2str(posWeight), ' -w-1', num2str(negWeight) ];
+model = svmtrain(y, X, params);
+run_title = sprintf('numSamples = %d, bestG = %d, bestC = %d', numSamples, bestG, bestC);
+visualizeBoundary(X, y, model,xfeature,yfeature,run_title);
+save(model_location,'model');

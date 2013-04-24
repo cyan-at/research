@@ -1,8 +1,9 @@
 %load my data
-numSamples = 1000;
+numSamples = 80;
 suffix = sprintf('_%d',numSamples);
-neg_target = sprintf('%s/neg_scores%s.mat',pwd, suffix);
-pos_target = sprintf('%s/pos_scores%s.mat',pwd, suffix);
+classifier = 'si_kmeans_tri_pyr3_h2048_imgW16_minN10_r2_imgperclass80_plus';
+neg_target = sprintf('%s/%s/neg_scores%s.mat',pwd, classifier, suffix);
+pos_target = sprintf('%s/%s/pos_scores%s.mat',pwd, classifier, suffix);
 load(neg_target);
 load(pos_target);
 
@@ -11,9 +12,9 @@ cnn = 1;
 two = 2;
 three = 3;
 xfeature = 'CNN';
-yfeature = '2D';
+yfeature = '3D';
 xfeat = cnn;
-yfeat = two;
+yfeat = three;
 x1 = pos_scores.matrix(xfeat,:);
 y1 = pos_scores.matrix(yfeat,:);
 labels1 = ones(1,size(x1,2));
@@ -30,10 +31,10 @@ labels = [labels1,labels2];
 cx = [c,c2];
 
 %zero mean and standardize deviation
-x=x-mean(x(:));
-x=x/std(x(:));
-y=y-mean(y(:));
-y=y/std(y(:));
+% x=x-mean(x(:));
+% x=x/std(x(:));
+% y=y-mean(y(:));
+% y=y/std(y(:));
 
 % On scatter plot you probably can't see the data density
 close all;
