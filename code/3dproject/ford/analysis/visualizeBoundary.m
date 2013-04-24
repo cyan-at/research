@@ -1,10 +1,10 @@
-function visualizeBoundary(X, y, model,xf,yf,t)
+function visualizeBoundary(X, y, model,xf,yf,t, savename)
 %VISUALIZEBOUNDARY plots a non-linear decision boundary learned by the SVM
 %   VISUALIZEBOUNDARYLINEAR(X, y, model) plots a non-linear decision 
 %   boundary learned by the SVM and overlays the data on it
 
 % Plot the training data on top of the boundary
-plotData(X, y)
+h = plotData(X, y);
 
 % Make classification predictions over a grid of values
 x1plot = linspace(min(X(:,1)), max(X(:,1)), 100)';
@@ -23,5 +23,11 @@ hold off;
 
 xlabel(xf);
 ylabel(yf);
-title(t);
+
+[~,acc,~] = svmpredict(y,X,model);
+
+t = strrep(t,'_',' ');
+title(sprintf('%s Acc = %2.2f',t, acc(1)));
+
+saveas(h,savename,'png'); %name is a string
 end

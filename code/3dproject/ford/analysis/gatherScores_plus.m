@@ -66,7 +66,7 @@ for i = 1:length(selection)
     if isempty(pc)
         continue;
     end
-    [label3D, score3D] = get3Dscore_plus(pc,inside,model3D,encoder3D,siparam);
+    [label3D, score3D] = get3Dscore(pc,inside,model3D,encoder3D,siparam);
     
     pos_scores_cnn = [pos_scores_cnn,score_cnn(i)];     %update cnn scores
     pos_scores_2D = [pos_scores_2D,score2D];            %update 2D score

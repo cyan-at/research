@@ -10,13 +10,6 @@ posWeight = 1;
 negWeight = 2;
 neg_target = sprintf('%s/%s/neg_scores%s.mat',pwd, source, suffix);
 pos_target = sprintf('%s/%s/pos_scores%s.mat',pwd, source, suffix);
-suffix = sprintf('_%d_pos%d_neg%d',numSamples,posWeight,negWeight);
-heatmap = sprintf('%s/%s.png',pwd,source);
-model_location = sprintf('%s/%s/model%s.mat',pwd,source,suffix);
-
-%load my data
-load(neg_target);
-load(pos_target);
 cnn = 1;
 two = 2;
 three = 3;
@@ -24,6 +17,14 @@ xfeature = 'CNN';
 yfeature = '3D';
 xfeat = cnn;
 yfeat = three;
+suffix = sprintf('run_%d_pos%d_neg%d_x%s_y%s',numSamples,posWeight,negWeight,xfeature,yfeature);
+heatmap = sprintf('%s/%s/%s/heatmap.png',pwd,source,suffix);
+model_location = sprintf('%s/%s/%s/model.mat',pwd,source,suffix);
+plotname = sprintf('%s/%s/%s/plot.png',pwd,source,suffix);
+ensure(sprintf('%s/%s/%s/',pwd,source,suffix));
+%load my data
+load(neg_target);
+load(pos_target);
 x1 = pos_scores.matrix(xfeat,:);
 y1 = pos_scores.matrix(yfeat,:);
 labels1 = ones(1,size(x1,2));
@@ -96,9 +97,9 @@ set(gca,'YTickLabel',sprintf('%3.1f|',log2cList));
 ylabel('Log_2c');
 title('Grid Search over c and \gamma for RBF kernel');
 saveas(hm, heatmap);
+close all;
 
 params = ['-t 2 -c ', num2str(bestC), ' -g ', num2str(bestG), ' -w1', num2str(posWeight), ' -w-1', num2str(negWeight) ];
 model = svmtrain(y, X, params);
-run_title = sprintf('numSamples = %d, bestG = %d, bestC = %d', numSamples, bestG, bestC);
-visualizeBoundary(X, y, model,xfeature,yfeature,run_title);
+visualizeBoundary(X, y, model,xfeature,yfeature,suffix,plotname);
 save(model_location,'model');
