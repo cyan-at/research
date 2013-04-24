@@ -19,7 +19,7 @@ encoder2D = load('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/cl
 model2D = load('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/classification/new3D/hog_kmeans_tri_pyr3_h2048_imgW16_minN10_r2/svm/hog/model.mat');
 encoder2D = encoder2D.encoder;
 model2D = model2D.model;
-
+hogparam = loadParameters('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/classification/new3D/', '1_pyr3_hidden2048_ps16_gs2_imgW16_minN10_r2.txt');
 
 %load 3D model, encoder and parameters
 source3D = 'si_kmeans_tri_pyr3_h2048_imgW16_minN10_r2_imgperclass80_plus';
@@ -36,7 +36,14 @@ rbf_location = sprintf('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/f
 rbfmodel = load(rbf_location);
 rbfmodel = rbfmodel.model;
 
-% for CNN scores of proposal 
+pos_three = [];
+pos_cnn = [];
+pos_two = [];
+
+neg_three = [];
+neg_cnn = [];
+neg_two = [];
+
 for j=1:length(d)
     [filename, score, ~] = textread(fullfile(res_dir,d(j).name),'%s %f %d');
     if isempty(filename)
@@ -57,14 +64,11 @@ for j=1:length(d)
     cam = mapTo{framenum}(dashIdx+1:end);
     load(sprintf('%s/%s/%s.mat',root_mat,scene,cam));
     gt(j) = obj_to_gt(obj);
-    
     % set thresh to .5
     bbox = bbox(bbox(:,5)>.5,:);
-
-    old_bbox = bbox;
-    idx=nms(old_bbox,.5);
-    old_bbox = old_bbox(idx,:);
-
+    bbox = bbox;
+    idx=nms(bbox,.5);
+    bbox = bbox(idx,:);
     idx=nms(bbox,.5);  % apply nms
     bbox = bbox(idx,:);
     
@@ -77,29 +81,43 @@ for j=1:length(d)
     three_scores = three_scores(valid,:);
     cnn_scores = bbox(:,5);
     
-    %do prediction based on rbf
-    %left column = cnn, right column = 3D
-    cnn_scores = cnn_scores - rbfmodel.xmean;
-    cnn_scores = cnn_scores / rbfmodel.xstd;
-    three_scores = three_scores - rbfmodel.ymean;
-    three_scores = three_scores / rbfmodel.ystd;
+    %get 2D data
+    [two_scores] = cnn_get2Dscores_plus(img,bbox,encoder2D,model2D,hogparam);
     
-    X = [cnn_scores,three_scores];
-    %standardize the scores
+    %split data
+    [posIdx, negIdx] = splitDataPosNeg(bbox,gt(j),0.4);
     
-    y = zeros(size(X,1),1);
-    model = rmfield(rbfmodel,'xmean');
-    model = rmfield(model,'ymean');
-    model = rmfield(model,'xstd');
-    model = rmfield(model,'ystd');
-    [rbflabel,~,rbfscore] = svmpredict(y,X,model);
+    pos_three = [pos_three,three_scores(posIdx)'];
+    neg_three = [neg_three,three_scores(negIdx)'];
     
-    %replace with rbf score
-    bbox(:,5) = rbfscore;
-    saveboxes(img,bbox,[],'');
+    pos_cnn = [pos_cnn,cnn_scores(posIdx)'];
+    neg_cnn = [neg_cnn,cnn_scores(negIdx)'];
     
-    pred_bbox{j} = bbox;
-    [m, acc] = eval_cnn(pred_bbox,gt,.5,'ap');
-    fprintf('ap: %4.4f\n',m.ap);
+    pos_two = [pos_two,two_scores(posIdx)'];
+    neg_two = [neg_two,two_scores(negIdx)'];    
 end
-plotRCPC(m.pc,m.rc,m.ap,'CNN + 3D RBF');
+
+%save data
+%save things
+neg_scores = struct();
+neg_scores.cnn = neg_cnn;
+neg_scores.two = neg_two;
+neg_scores.three = neg_three;
+neg_matrix = [neg_cnn;neg_two;neg_three];
+neg_scores.matrix = neg_matrix;
+
+pos_scores = struct();
+pos_scores.cnn = pos_cnn;
+pos_scores.two = pos_two;
+pos_scores.three = pos_three;
+pos_matrix = [pos_cnn;pos_two;pos_three];
+pos_scores.matrix = pos_matrix;
+
+neg_target = sprintf('%s/neg_scores_%s.mat',pwd, 'test');
+pos_target = sprintf('%s/pos_scores_%s.mat',pwd, 'test');
+save(neg_target,'neg_scores');
+save(pos_target,'pos_scores');
+
+%gather up, format, run RBF
+
+

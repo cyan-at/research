@@ -41,10 +41,14 @@ labels = [labels1,labels2];
 cx = [c,c2];
 
 %zero mean and standardize deviation
-x=x-mean(x(:));
-x=x/std(x(:));
-y=y-mean(y(:));
-y=y/std(y(:));
+xmean = mean(x(:));
+xstd = std(x(:));
+x=x-xmean;
+x=x/xstd;
+ymean = mean(y(:));
+ystd = std(y(:));
+y=y-ymean;
+y=y/ystd;
 X = [x',y'];
 y = labels';
 close all;
@@ -102,4 +106,8 @@ close all;
 params = ['-t 2 -c ', num2str(bestC), ' -g ', num2str(bestG), ' -w1', num2str(posWeight), ' -w-1', num2str(negWeight) ];
 model = svmtrain(y, X, params);
 visualizeBoundary(X, y, model,xfeature,yfeature,suffix,plotname);
+model.xstd = xstd;
+model.xmean = xmean;
+model.ystd = ystd;
+model.ymean = ymean;
 save(model_location,'model');
