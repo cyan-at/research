@@ -1,18 +1,21 @@
+function refine_test(rbf_model_name,exp_desc,xfeature,xmodel,yfeature,ymodel,opt_standardize)
+%expects the rbf_model_name under pwd/rbf_test/
+%expects xfeature: 3D, 2D, CNN, objectivity
+%expect yfeature: 3D, 2D, CNN, objectivity
+%opt standardize is true for statistical normalization
+close all;
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));
 addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/detection/
 addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/cnn/
 addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/utils
 
+%get the cnn detections
 res_dir = '/mnt/neocortex/scratch/norrathe/data/car_patches/cnn_dataset_multiple_scales/ford/batch_redo_train_working_folder/results_beforenms_redo_train_ver2';
-mode = 'baseline';
-
 root_mat = '/mnt/neocortex/scratch/jumpbot/data/3dproject/withlabels/test';
 d = dir(fullfile(res_dir,'/*_res.txt'));
-
 [~, mapTo] = textread(fullfile(res_dir,'map.txt'), '%d %s');
 load('/mnt/neocortex/data/Ford/IJRR-Dataset-1-subset/PARAM.mat');
-load('/mnt/neocortex/scratch/norrathe/tmp/pascal_ford/results3/data_final.mat');
 
 %load 2D things
 encoder2D = load('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/classification/new3D/hog_kmeans_tri_pyr3_h2048_imgW16_minN10_r2/results/hog/encoder.mat');
@@ -30,19 +33,29 @@ model3D = model3D.model;
 siparam = loadParameters('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/classification/new3D/', '1_pyr3_hidden2048_ps16_gs2_imgW16_minN10_r2.txt');
 
 %load RBF model
-suffix = 'run_80_pos1_neg2_xCNN_y3D';
-rbf_location = sprintf('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/analysis/%s/%s/model.mat',...
-    source3D,suffix);
+% xfeature = 'CNN';
+% yfeature = '2D';
+% rbf_model_name = sprintf('pos%d_neg%d_x%s_y%s_nomodify',posWeight,negWeight,xfeature,yfeature);
+% rbf_model_name ='pos32_neg54_x2D_y3D_do';
+% do = true;
+rbf_location = sprintf('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/analysis/rbf_test/%s/model.mat',rbf_model_name);
 rbfmodel = load(rbf_location);
 rbfmodel = rbfmodel.model;
+% exp_desc = 'skip5';
+% for CNN scores of proposal 
+clear gt;
+clear pred_bbox;
 
-pos_three = [];
-pos_cnn = [];
-pos_two = [];
-
-neg_three = [];
-neg_cnn = [];
-neg_two = [];
+if opt_standardize
+xmean = rbfmodel.xmean;
+xstd = rbfmodel.xstd;
+ymean = rbfmodel.ymean;
+ystd = rbfmodel.ystd;
+rbfmodel = rmfield(rbfmodel,'xmean');
+rbfmodel = rmfield(rbfmodel,'xstd');
+rbfmodel = rmfield(rbfmodel,'ymean');
+rbfmodel = rmfield(rbfmodel,'ystd');
+end
 
 for j=1:5:length(d)
     fprintf('%d left\n',length(d)-j);
@@ -110,38 +123,29 @@ for j=1:5:length(d)
         s.three_scores = three_scores;
         save(scoresFile,'s');
     end
+
+    if opt_standardize
+        cnn_scores = (cnn_scores - xmean)./xstd;
+        two_scores = (two_scores - xmean)./xstd;
+        three_scores = (three_scores - ymean)./ystd;
+    end
     
-    %split data
-    [posIdx, negIdx] = splitDataPosNeg(bbox,gt(j),0.5);
-    
-    pos_three = [pos_three,three_scores(posIdx)'];
-    neg_three = [neg_three,three_scores(negIdx)'];
-    
-    pos_cnn = [pos_cnn,cnn_scores(posIdx)'];
-    neg_cnn = [neg_cnn,cnn_scores(negIdx)'];
-    
-    pos_two = [pos_two,two_scores(posIdx)'];
-    neg_two = [neg_two,two_scores(negIdx)'];    
+    %do prediction based on rbf
+    %prepare X
+    if strcmp(
+    X = [two_scores,three_scores];
+    %standardize the scores
+    y = zeros(size(X,1),1);
+    [rbflabel,~,rbfscore] = svmpredict(y,X,rbfmodel);
+    %replace with rbf score
+    bbox(:,5) = rbfscore;
+    %saveboxes(img,bbox,[],'');
+    pred_bbox{j} = bbox;
+    [m, acc] = eval_cnn(pred_bbox,gt,.5,'ap');
+    fprintf('ap: %4.4f\n',m.ap);
 end
-
-%save data
-%save things
-neg_scores = struct();
-neg_scores.cnn = neg_cnn;
-neg_scores.two = neg_two;
-neg_scores.three = neg_three;
-neg_matrix = [neg_cnn;neg_two;neg_three];
-neg_scores.matrix = neg_matrix;
-
-pos_scores = struct();
-pos_scores.cnn = pos_cnn;
-pos_scores.two = pos_two;
-pos_scores.three = pos_three;
-pos_matrix = [pos_cnn;pos_two;pos_three];
-pos_scores.matrix = pos_matrix;
-
-suffix = 'test_skip5';
-neg_target = sprintf('%s/neg_scores_%s.mat',pwd, suffix);
-pos_target = sprintf('%s/pos_scores_%s.mat',pwd, suffix);
-save(neg_target,'neg_scores');
-save(pos_target,'pos_scores');
+saveDir = sprintf('%s/refine_test/%s_%s/',pwd,rbf_model_name,exp_desc);
+ensure(saveDir);
+plotRCPC(m.pc,m.rc,m.ap,rbf_model_name,saveDir);
+disp(saveDir);
+end

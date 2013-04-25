@@ -1,15 +1,16 @@
-function [] = plotRCPC( prec, rec, ap, msg)
+function plotRCPC( prec, rec, ap, desc, saveDir)
 %PLOTSVMRESULTS Summary of this function goes here
 %   Detailed explanation goes here
     h=figure;
     plot(rec,prec,'-');
-    recName = sprintf('%s/rec.mat',svm.resultsPath);
-    precName = sprintf('%s/prec.mat',svm.resultsPath);
+    recName = sprintf('%s/rec.mat',saveDir);
+    precName = sprintf('%s/prec.mat',saveDir);
     save(recName,'rec');
     save(precName,'prec');
     grid;
     xlabel 'recall'
     ylabel 'precision'
-    title(sprintf('%s AP = %.3f',msg,ap));
-    print(h,'-djpeg',sprintf('%s/prec_rec_curve.jpg',svm.resultsPath));
+    desc = strrep(desc, '_', ' ');
+    title(sprintf('%s AP = %.3f',desc,ap));
+    print(h,'-djpeg',sprintf('%s/plot.jpeg',saveDir));
 end
