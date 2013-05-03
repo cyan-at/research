@@ -1,3 +1,4 @@
+function gather_data()
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));
 addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/detection/
@@ -145,3 +146,4 @@ neg_target = sprintf('%s/neg_scores_%s.mat',pwd, suffix);
 pos_target = sprintf('%s/pos_scores_%s.mat',pwd, suffix);
 save(neg_target,'neg_scores');
 save(pos_target,'pos_scores');
+end

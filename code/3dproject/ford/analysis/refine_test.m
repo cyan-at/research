@@ -1,7 +1,5 @@
-function refine_test(rbf_model_name,exp_desc,xfeature,xmodel,yfeature,ymodel,opt_standardize)
+function refine_test(rbf_model_name,exp_desc,iteration_step,xfeature,yfeature,opt_standardize)
 %expects the rbf_model_name under pwd/rbf_test/
-%expects xfeature: 3D, 2D, CNN, objectivity
-%expect yfeature: 3D, 2D, CNN, objectivity
 %opt standardize is true for statistical normalization
 close all;
 researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
@@ -47,17 +45,17 @@ clear gt;
 clear pred_bbox;
 
 if opt_standardize
-xmean = rbfmodel.xmean;
-xstd = rbfmodel.xstd;
-ymean = rbfmodel.ymean;
-ystd = rbfmodel.ystd;
-rbfmodel = rmfield(rbfmodel,'xmean');
-rbfmodel = rmfield(rbfmodel,'xstd');
-rbfmodel = rmfield(rbfmodel,'ymean');
-rbfmodel = rmfield(rbfmodel,'ystd');
+    xmean = rbfmodel.xmean;
+    xstd = rbfmodel.xstd;
+    ymean = rbfmodel.ymean;
+    ystd = rbfmodel.ystd;
+    rbfmodel = rmfield(rbfmodel,'xmean');
+    rbfmodel = rmfield(rbfmodel,'xstd');
+    rbfmodel = rmfield(rbfmodel,'ymean');
+    rbfmodel = rmfield(rbfmodel,'ystd');
 end
 
-for j=1:5:length(d)
+for j=1:iteration_step:length(d)
     fprintf('%d left\n',length(d)-j);
     scoresFile = sprintf('%s/scores/score_for_%s.mat',pwd,d(j).name);
     framenum = sscanf(d(j).name,'data_batch_%d_res.txt');
@@ -132,7 +130,6 @@ for j=1:5:length(d)
     
     %do prediction based on rbf
     %prepare X
-    if strcmp(
     X = [two_scores,three_scores];
     %standardize the scores
     y = zeros(size(X,1),1);
