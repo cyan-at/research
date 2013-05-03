@@ -115,19 +115,21 @@ for j=1:iteration_step:length(d)
         three_scores = (three_scores - ymean)./ystd;
     end
     matrix = [cnn_scores,two_scores,three_scores];
+    
     %prepare X
-    %X = [two_scores,three_scores];
     X = [matrix(:,xfeature.matrix_idx),matrix(:,yfeature.matrix_idx)];
     %standardize the scores
     y = zeros(size(X,1),1);
     [~,~,rbfscore] = svmpredict(y,X,rbfmodel);
     
-    %now we begin our search policy
-    %do a breadth first search on neighboring locations
-    
+    three_cam = sprintf('%s/%s/three_%s.mat',root_mat,scene,cam);
+    load(three_cam); %data, identify unique clusters and add them as seeds
+
     
     %replace with rbf score
     bbox(:,5) = rbfscore;
+    idx=nms(bbox,.5);
+    bbox = bbox(idx,:);
     
     %saveboxes(img,bbox,[],'');
     pred_bbox{j} = bbox;

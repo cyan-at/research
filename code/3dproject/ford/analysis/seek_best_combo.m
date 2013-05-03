@@ -3,6 +3,7 @@
 % [neg_scores,pos_scores] = gatherData(5,200,saveName); %saves it in locations
 
 %overhead
+set(0,'DefaultFigureVisible','off');
 cnnfeature = struct(); cnnfeature.matrix_idx = 1; cnnfeature.name = 'CNN';
 twofeature = struct(); twofeature.matrix_idx = 2; twofeature.name = '2D';
 threefeature = struct(); threefeature.matrix_idx = 3; threefeature.name = '3D';
@@ -19,7 +20,7 @@ bestposWeight = 0.1;
 bestnegWeight = 0.1;
 bestIterationStep = 1;
 exp_desc = 'search_across_parameters';
-for i = 1:length(pos_weight_selection)
+for i = 3:length(pos_weight_selection)
     for j = 1:length(neg_weight_selection)
         for k = 1:2
             for l = 1:5
