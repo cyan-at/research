@@ -12,5 +12,5 @@ function plotRCPC( prec, rec, ap, desc, saveDir)
     ylabel 'precision'
     desc = strrep(desc, '_', ' ');
     title(sprintf('%s AP = %.3f',desc,ap));
-    print(h,'-djpeg',sprintf('%s/plot.jpeg',saveDir));
+    print(h,'-djpeg',sprintf('%s/refine_plot.jpeg',saveDir));
 end

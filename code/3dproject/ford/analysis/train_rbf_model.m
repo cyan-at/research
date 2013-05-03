@@ -1,4 +1,5 @@
-function rbf_name = train_rbf_model(pos_scores,neg_scores,xfeature,yfeature,posWeight, negWeight,opt_standardize)
+function [model,rbf_name] = train_rbf_model(exp_desc,pos_scores,neg_scores,xfeature,yfeature,posWeight, negWeight,opt_standardize)
+experiment = exp_desc;
 %pos_scores is a struct with 2D, 3D, ... and a matrix field %[neg_cnn;neg_two;neg_three];
 %expects xfeature: 3D, 2D, CNN, objectivity struct with fields 'name' and
 %'matrix_idx'
@@ -37,9 +38,12 @@ y = labels';
 
 %some overhead
 %rbf_name is the name of the rbf model
-rbf_name = sprintf('pos%d_neg%d_x%s_y%s_do',posWeight,negWeight,xfeature.name,yfeature.name);
+if opt_standardize
+    rbf_name = sprintf('pos%2.2f_neg%2.2f_x%s_y%s_do',posWeight,negWeight,xfeature.name,yfeature.name);
+else
+    rbf_name = sprintf('pos%2.2f_neg%2.2f_x%s_y%s_dont',posWeight,negWeight,xfeature.name,yfeature.name);
+end
 %make directories
-experiment = 'rbf_test';
 heatmap = sprintf('%s/%s/%s/heatmap.png',pwd,experiment,rbf_name);
 model_location = sprintf('%s/%s/%s/model.mat',pwd,experiment,rbf_name);
 plotname = sprintf('%s/%s/%s/plot.png',pwd,experiment,rbf_name);
@@ -106,4 +110,5 @@ end
 
 %save the model
 save(model_location,'model');
+fprintf('RBF model saved at: %s\n',model_location);
 end

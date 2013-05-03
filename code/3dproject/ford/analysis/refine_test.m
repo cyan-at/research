@@ -1,4 +1,4 @@
-function refine_test(rbf_model_name,exp_desc,iteration_step,xfeature,yfeature,opt_standardize)
+function ap = refine_test(rbfmodel,rbf_name,exp_desc,iteration_step,xfeature,yfeature,opt_standardize)
 %expects the rbf_model_name under pwd/rbf_test/
 %opt standardize is true for statistical normalization
 close all;
@@ -30,20 +30,8 @@ encoder3D = encoder3D.encoder;
 model3D = model3D.model;
 siparam = loadParameters('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/classification/new3D/', '1_pyr3_hidden2048_ps16_gs2_imgW16_minN10_r2.txt');
 
-%load RBF model
-% xfeature = 'CNN';
-% yfeature = '2D';
-% rbf_model_name = sprintf('pos%d_neg%d_x%s_y%s_nomodify',posWeight,negWeight,xfeature,yfeature);
-% rbf_model_name ='pos32_neg54_x2D_y3D_do';
-% do = true;
-rbf_location = sprintf('/mnt/neocortex/scratch/jumpbot/research/code/3dproject/ford/analysis/rbf_test/%s/model.mat',rbf_model_name);
-rbfmodel = load(rbf_location);
-rbfmodel = rbfmodel.model;
-% exp_desc = 'skip5';
-% for CNN scores of proposal 
 clear gt;
 clear pred_bbox;
-
 if opt_standardize
     xmean = rbfmodel.xmean;
     xstd = rbfmodel.xstd;
@@ -54,7 +42,6 @@ if opt_standardize
     rbfmodel = rmfield(rbfmodel,'ymean');
     rbfmodel = rmfield(rbfmodel,'ystd');
 end
-
 for j=1:iteration_step:length(d)
     fprintf('%d left\n',length(d)-j);
     scoresFile = sprintf('%s/scores/score_for_%s.mat',pwd,d(j).name);
@@ -127,22 +114,25 @@ for j=1:iteration_step:length(d)
         two_scores = (two_scores - xmean)./xstd;
         three_scores = (three_scores - ymean)./ystd;
     end
-    
-    %do prediction based on rbf
+    matrix = [cnn_scores,two_scores,three_scores];
     %prepare X
-    X = [two_scores,three_scores];
+    %X = [two_scores,three_scores];
+    X = [matrix(:,xfeature.matrix_idx),matrix(:,yfeature.matrix_idx)];
     %standardize the scores
     y = zeros(size(X,1),1);
-    [rbflabel,~,rbfscore] = svmpredict(y,X,rbfmodel);
+    [~,~,rbfscore] = svmpredict(y,X,rbfmodel);
+    
     %replace with rbf score
     bbox(:,5) = rbfscore;
+    
     %saveboxes(img,bbox,[],'');
     pred_bbox{j} = bbox;
-    [m, acc] = eval_cnn(pred_bbox,gt,.5,'ap');
+    [m, ~] = eval_cnn(pred_bbox,gt,.5,'ap');
     fprintf('ap: %4.4f\n',m.ap);
 end
-saveDir = sprintf('%s/refine_test/%s_%s/',pwd,rbf_model_name,exp_desc);
+ap = m.ap;
+saveDir = sprintf('%s/%s/%s/refine_%d/',pwd,exp_desc,rbf_name,iteration_step);
 ensure(saveDir);
-plotRCPC(m.pc,m.rc,m.ap,rbf_model_name,saveDir);
+plotRCPC(m.pc,m.rc,m.ap,rbf_name,saveDir);
 disp(saveDir);
 end
