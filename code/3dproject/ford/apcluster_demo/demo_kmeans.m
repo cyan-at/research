@@ -5,8 +5,6 @@ addpath /mnt/neocortex/scratch/jumpbot/libdeepnets/trunk/kmeans/fast_kmeans/
 N=1000;
 km = KMeans(N, true);
 km.train(data);
-
-
 W = km.centroids;
 ws = sqrt(size(W,1));
 

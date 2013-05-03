@@ -9,25 +9,26 @@ yfeature = threefeature;
 opt_standardize = true;
 interval = 5;
 
-%just cnn detection
+% %just cnn detection
 % m = just_cnn(interval);
 % saveDir = sprintf('%s/summary/just_cnn/',pwd);
 % ensure(saveDir);
 % plotRCPC(m.pc,m.rc,m.ap,'cnn + nms',saveDir);
 % disp(saveDir);
-
-%just 3D detection
-m = just_3D(interval);
-saveDir = sprintf('%s/summary/just_three/',pwd);
-ensure(saveDir);
-plotRCPC(m.pc,m.rc,m.ap,'3D + nms',saveDir);
-disp(saveDir);
+% 
+% %just 3D detection
+% m = just_3D(interval);
+% saveDir = sprintf('%s/summary/just_three/',pwd);
+% ensure(saveDir);
+% plotRCPC(m.pc,m.rc,m.ap,'3D + nms',saveDir);
+% disp(saveDir);
 % 
 % %just 2D detection
-% m = just_3D(interval);
-% saveDir = sprintf('%s/summary/just_cnn/',pwd);
+% m = just_2D(interval);
+% saveDir = sprintf('%s/summary/just_two/',pwd);
 % ensure(saveDir);
-% plotRCPC(m.pc,m.rc,m.ap,'cn + nms',saveDir);
+% plotRCPC(m.pc,m.rc,m.ap,'HOG + nms',saveDir);
 % disp(saveDir);
 
 %combining the results from CNN and HOG
+

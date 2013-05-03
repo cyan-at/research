@@ -75,13 +75,7 @@ for j=1:iteration_step:length(d)
     %we know the structure of data: n x 12 of format: u1,v2, horzrange3,
     %range4, something5, x6, y7, z8, cam
     
-%     %seed the bbox queue with the cnn detections / or 3d bounding box
-%     bboxQueue = CQueue;
-%     for boxi = 1:size(bbox,1)
-%         bndbox = bbox(boxi,:);
-%         db = DetectionSeed(bndbox,data,img);
-%         bboxQueue.push(db);
-%     end
+
 
     %replace with rbf score
     bbox(:,5) = rbfscore;
