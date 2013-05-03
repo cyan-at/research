@@ -1,4 +1,4 @@
-function ap = refine_test(rbfmodel,rbf_name,exp_desc,iteration_step,xfeature,yfeature,opt_standardize)
+function m = refine_test(rbfmodel,rbf_name,exp_desc,iteration_step,xfeature,yfeature,opt_standardize)
 %expects the rbf_model_name under pwd/rbf_test/
 %opt standardize is true for statistical normalization
 close all;
@@ -130,7 +130,6 @@ for j=1:iteration_step:length(d)
     [m, ~] = eval_cnn(pred_bbox,gt,.5,'ap');
     fprintf('ap: %4.4f\n',m.ap);
 end
-ap = m.ap;
 saveDir = sprintf('%s/%s/%s/refine_%d/',pwd,exp_desc,rbf_name,iteration_step);
 ensure(saveDir);
 plotRCPC(m.pc,m.rc,m.ap,rbf_name,saveDir);

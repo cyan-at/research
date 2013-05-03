@@ -73,7 +73,7 @@ for i = 1:Nlog2c
         disp([num2str(runCounter), '/', num2str(totalRuns)]);
         disp(['Trying c=', num2str(2^log2c), ' and g=', num2str(2^log2g)]);
         % Train with current cost & gamma
-        params = ['-t 2 -v 10 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g), ' -w1', num2str(posWeight), ' -w-1', num2str(negWeight) ];
+        params = ['-t 2 -v 10 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g), ' -w1 ', num2str(posWeight), ' -w0 ', num2str(negWeight) ];
         accuracy = svmtrain(y, X, params);
         % Update heatmap matrix
         heat(i,j) = accuracy;
