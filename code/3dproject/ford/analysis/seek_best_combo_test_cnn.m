@@ -4,7 +4,7 @@
 [neg_scores,pos_scores] = gatherTestData(5);
 
 %overhead
-set(0,'DefaultFigureVisible','off');
+set(0,'DefaultFigureVisible','on');
 cnnfeature = struct(); cnnfeature.matrix_idx = 1; cnnfeature.name = 'CNN';
 twofeature = struct(); twofeature.matrix_idx = 2; twofeature.name = '2D';
 threefeature = struct(); threefeature.matrix_idx = 3; threefeature.name = '3D';

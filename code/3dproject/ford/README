@@ -1,0 +1,7 @@
+Data structure:
+Each scene consists of 5 cameras, each camera contains:
+- 3D pointcloud data
+- Mapping from 3D to the UV on 2D image
+- 2D image
+
+prep will create a folder for each scene, so run

@@ -6,7 +6,7 @@ researchPath = '/mnt/neocortex/scratch/jumpbot/research/code/3dproject/';
 addpath(genpath(strcat(researchPath,'/library/')));
 addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/detection/
 addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/cnn/
-addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/utils
+addpath /mnt/neocortex/scratch/norrathe/svn/libdeepnets/trunk/3dcar_detection/utils/
 
 %get the cnn detections
 res_dir = '/mnt/neocortex/scratch/norrathe/data/car_patches/cnn_dataset_multiple_scales/ford/batch_redo_train_working_folder/results_beforenms_redo_train_ver2';
@@ -52,7 +52,7 @@ for j=1:iteration_step:length(d)
     cam = mapTo{framenum}(dashIdx+1:end);
     load(sprintf('%s/%s/%s.mat',root_mat,scene,cam));
     gt(j) = obj_to_gt(obj);
-        
+    
     if (exist(scoresFile,'file'))
         load(scoresFile);
         bbox = s.bbox;
@@ -116,7 +116,6 @@ for j=1:iteration_step:length(d)
     end
     matrix = [cnn_scores,two_scores,three_scores];
     %prepare X
-    %X = [two_scores,three_scores];
     X = [matrix(:,xfeature.matrix_idx),matrix(:,yfeature.matrix_idx)];
     %standardize the scores
     y = zeros(size(X,1),1);
@@ -124,8 +123,10 @@ for j=1:iteration_step:length(d)
     
     %replace with rbf score
     bbox(:,5) = rbfscore;
-    
-    %saveboxes(img,bbox,[],'');
+    idx=nms(bbox,.5);
+    bbox = bbox(idx,:);
+        
+    %gather up the proposed boxes
     pred_bbox{j} = bbox;
     [m, ~] = eval_cnn(pred_bbox,gt,.5,'ap');
     fprintf('ap: %4.4f\n',m.ap);
